@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Liste de vos contacts"
-        android:textSize="22dip"
+        android:textSize="20dip"
         />
 
     <!-- recyclerview pour afficher la liste des contacts -->
@@ -22,7 +22,7 @@
         android:id="@+id/contacts_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         />
 
     <!-- Bouton pour envoyer un message aux contacts sélectionnés -->

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Contact> dataset = new ArrayList<Contact>();
+    private ArrayList<Contact> dataset = new ArrayList<>();
     ContactsRecyclerAdapter adapter = new ContactsRecyclerAdapter(dataset);
 
     public boolean isPermissionsGranted() {
@@ -103,10 +103,21 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Création d'un nouvel intent pour démarrer l'activité suivante
+                ArrayList<Contact> contacts = new ArrayList<>();
+
+                // Récupération des contacts sélectionnés
+                for (Contact contact : dataset) {
+                    if (contact.isSelected()) {
+                        contacts.add(contact);
+                    }
+                }
+
                 Intent intent = new Intent(MainActivity.this, SelectResponseActivity.class);
+
+                // Envoi de la liste des contacts sélectionnés à l'activité suivante
+                intent.putParcelableArrayListExtra("contactsList", contacts);
                 startActivity(intent);
-                return;
+
             }
         });
 
