@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_marginTop="10dp"
     >
 
@@ -13,20 +13,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <!-- TextView du nom du contact -->
-    <TextView
-        android:id="@+id/contact_name"
-        android:layout_width="wrap_content"
+    <!-- Grouper la partie informationelle -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nom du contact"
-        android:textStyle="bold"
-        />
+        android:orientation="vertical"
+        >
 
-    <!-- TextView du numéro du contact -->
-    <TextView
-        android:id="@+id/contact_phone_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Numéro de téléphone du contact" />
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nom du contact"
+                android:textStyle="bold"
+                />
 
+            <!-- TextView du numéro du contact -->
+            <TextView
+                android:id="@+id/contact_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Numéro de téléphone du contact" />
+
+        </LinearLayout>
 </LinearLayout>
