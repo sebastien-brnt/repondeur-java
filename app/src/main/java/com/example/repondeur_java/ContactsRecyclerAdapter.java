@@ -1,9 +1,12 @@
 package com.example.repondeur_java;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,20 +15,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ViewHolder> {
-    List<Contact> contactsDataset;
+    private List<Contact> contactsDataset;
+    private List<Contact> selectedContacts;
 
     public ContactsRecyclerAdapter(List<Contact> dataset) {
         contactsDataset = dataset;
+        selectedContacts = new ArrayList<>();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nomTextView;
         private final TextView numTelTextView;
+        private final CheckBox checkBox;
 
         ViewHolder(View v) {
             super(v);
             nomTextView = v.findViewById(R.id.contact_name);
             numTelTextView = v.findViewById(R.id.contact_phone_number);
+            checkBox = v.findViewById(R.id.contact_checkbox);
         }
 
         TextView getNomTextView() {
@@ -34,6 +41,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
         TextView getNumTelTextView() {
             return numTelTextView;
+        }
+
+        CheckBox getCheckBox() {
+            return checkBox;
         }
     }
 
@@ -52,8 +63,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
         // Mise à jour des informations du contact dans la vue
         if (contact != null && viewHolder != null) {
+            // Récupération des éléments de la vue
             TextView nomTextView = viewHolder.getNomTextView();
             TextView numTelTextView = viewHolder.getNumTelTextView();
+            CheckBox contactCheckBox = viewHolder.getCheckBox();
 
             if (nomTextView != null) {
                 nomTextView.setText(contact.getName() != null ? contact.getName() : "");
@@ -62,6 +75,22 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             if (numTelTextView != null) {
                 numTelTextView.setText(contact.getPhoneNumber() != null ? contact.getPhoneNumber() : "");
             }
+
+            // Mise à jour de la checkbox
+            contactCheckBox.setChecked(contact.isSelected());
+            contactCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    contact.setSelected(isChecked);
+
+                    // Si la checkbox est cochée, on ajoute le contact à la liste des contacts sélectionnés
+                    if (isChecked) {
+                        selectedContacts.add(contact);
+                    } else {
+                        selectedContacts.remove(contact);
+                    }
+                }
+            });
         }
     }
 

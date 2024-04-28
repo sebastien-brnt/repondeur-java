@@ -7,13 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Récupération du bouton de passage à l'activité de réponse
+        Button button = findViewById(R.id.select_response_button);
+
         // Création du RecyckerView pour la liste des messages
         RecyclerView rc_view = findViewById(R.id.contacts_recycler);
         rc_view.setLayoutManager(new LinearLayoutManager(this));
@@ -90,5 +98,21 @@ public class MainActivity extends AppCompatActivity {
             // Chargement des contacts
             loadContacts();
         }
+
+        // Passage à l'activité de réponse au clic sur le bouton
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Création d'un nouvel intent pour démarrer l'activité suivante
+                Intent intent = new Intent(MainActivity.this, SelectResponseActivity.class);
+                startActivity(intent);
+                return;
+            }
+        });
+
+
+
+
+
     }
 }

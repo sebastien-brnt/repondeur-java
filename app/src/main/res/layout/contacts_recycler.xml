@@ -8,6 +8,11 @@
     android:layout_marginTop="10dp"
     >
 
+    <!-- CheckBox pour sélectionner le contact -->
+    <CheckBox android:id="@+id/contact_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <!-- TextView du nom du contact -->
     <TextView
         android:id="@+id/contact_name"

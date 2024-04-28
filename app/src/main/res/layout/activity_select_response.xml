@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SelectResponseActivity"
+    android:padding="20dp"
+    >
+
+    <!-- textView du titre -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liste des réponses prédéfinies"
+        android:textSize="22dip"
+        />
+
+    <!-- RadioGroup pour les réponses prédéfinies -->
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/radio_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Je ne suis pas disponible pour le moment"/>
+
+        <RadioButton android:id="@+id/radio_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Je ne peux pas répondre a votre message actuellement"/>
+
+        <RadioButton android:id="@+id/radio_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Veuillez me contacter ultérieurement"/>
+
+        <RadioButton android:id="@+id/radio_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Je suis en RDV veuillez me recontacter ultérieurement"/>
+    </RadioGroup>
+
+    <!-- EditText pour ajouter une réponse automatique personnalisée -->
+    <EditText
+        android:id="@+id/input_response"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType=
+            "textCapSentences|textAutoCorrect"
+    />
+
+    <!-- Bouton d'ajout de nouvelle réponse personnalisée -->
+    <Button
+        android:id="@+id/add_response_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajouter une réponse"
+        android:layout_marginTop="5dp"
+        />
+
+
+    <!-- Bouton de validation de la réponse automatique à envoyer -->
+    <Button
+        android:id="@+id/select_response_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider la réponse"
+        android:layout_marginTop="20dp"
+        />
+</LinearLayout>
