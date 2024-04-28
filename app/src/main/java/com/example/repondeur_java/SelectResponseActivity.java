@@ -1,5 +1,7 @@
 package com.example.repondeur_java;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,7 +14,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SelectResponseActivity extends AppCompatActivity {
     private EditText inputResponse;
@@ -35,6 +39,8 @@ public class SelectResponseActivity extends AppCompatActivity {
                 addCustomResponse();
             }
         });
+
+        addResponseFromPhoneMemory();
     }
 
     private void addCustomResponse() {
@@ -48,6 +54,9 @@ public class SelectResponseActivity extends AppCompatActivity {
             radioButton.setText(customResponse);
             radioGroup.addView(radioButton);
 
+            // Sauvegarde de la réponse personnalisée la mémoire du téléphone
+            saveResponses(customResponse);
+
             // Suppression du texte de l'EditText après l'ajout
             inputResponse.setText("");
         } else {
@@ -55,5 +64,45 @@ public class SelectResponseActivity extends AppCompatActivity {
             Toast.makeText(this, "Veuillez entrer une réponse", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void saveResponses(String response) {
+        // Ajout de la réponse à la liste des réponses sauvegardées
+        SharedPreferences sharedPreferences = getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> responsesSet = getSavedResponses();
+        responsesSet.add(response);
+        editor.putStringSet("responses", responsesSet);
+        editor.apply();
+    }
+
+    private Set<String> getSavedResponses() {
+        // Récupération des réponses sauvegardées
+        SharedPreferences sharedPreferences = getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
+        return sharedPreferences.getStringSet("responses", new HashSet<String>());
+    }
+
+    private void addResponseFromPhoneMemory() {
+        // Récupération du RadioGroup
+        RadioGroup radioGroup = findViewById(R.id.response_radio_group);
+
+        // Récupération des réponses sauvegardées
+        Set<String> savedResponses = getSavedResponses();
+
+        // Ajout des boutons radios pour chaque réponse sauvegardée
+        for (String response : savedResponses) {
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setText(response);
+            radioGroup.addView(radioButton);
+        }
+    }
+
+    private void clearSavedResponses() {
+        // Suppression de toutes les réponses sauvegardées
+        SharedPreferences sharedPreferences = getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
 }
 
