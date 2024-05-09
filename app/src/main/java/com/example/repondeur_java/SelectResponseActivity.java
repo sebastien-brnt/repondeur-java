@@ -43,7 +43,7 @@ public class SelectResponseActivity extends AppCompatActivity {
 
         // Récupération de la liste des contact, de  l'EditText, du RadioGroup et du Button
         inputResponse = findViewById(R.id.input_response);
-        radioGroup = findViewById(R.id.response_radio_group);
+        radioGroup = findViewById(R.id.radio_group_responses);
         Button addButton = findViewById(R.id.add_response_button);
 
         // Ajout d'un écouteur au click sur le bouton pour ajouter une réponse personnalisée
@@ -97,7 +97,7 @@ public class SelectResponseActivity extends AppCompatActivity {
 
     private void addResponseFromPhoneMemory() {
         // Récupération du RadioGroup
-        RadioGroup radioGroup = findViewById(R.id.response_radio_group);
+        RadioGroup radioGroup = findViewById(R.id.radio_group_responses);
 
         // Récupération des réponses sauvegardées
         Set<String> savedResponses = getSavedResponses();

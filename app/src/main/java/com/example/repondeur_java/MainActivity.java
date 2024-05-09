@@ -103,14 +103,9 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Contact> contacts = new ArrayList<>();
-
                 // Récupération des contacts sélectionnés
-                for (Contact contact : dataset) {
-                    if (contact.isSelected()) {
-                        contacts.add(contact);
-                    }
-                }
+                ArrayList<Contact> contacts;
+                contacts = adapter.getSelectedContacts();
 
                 Intent intent = new Intent(MainActivity.this, SelectResponseActivity.class);
 

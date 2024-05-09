@@ -1,7 +1,5 @@
 package com.example.repondeur_java;
 
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,7 @@ import java.util.List;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ViewHolder> {
     private List<Contact> contactsDataset;
-    private List<Contact> selectedContacts;
+    private ArrayList<Contact> selectedContacts;
 
     public ContactsRecyclerAdapter(List<Contact> dataset) {
         contactsDataset = dataset;
@@ -98,6 +96,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     public int getItemCount() {
         // Récupération du nombre de contacts
         return contactsDataset.size();
+    }
+
+    public ArrayList<Contact> getSelectedContacts() {
+        return selectedContacts;
     }
 
     public void updateContacts(List<Contact> newData) {
