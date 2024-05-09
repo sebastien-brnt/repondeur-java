@@ -13,17 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.repondeur_java.Contact;
 import com.example.repondeur_java.R;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class MessageFragment extends Fragment {
@@ -35,7 +29,6 @@ public class MessageFragment extends Fragment {
     private String mParam2;
 
     private EditText inputResponse;
-    private RadioGroup radioGroup;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -65,7 +58,6 @@ public class MessageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_message, container, false);
 
         inputResponse = view.findViewById(R.id.input_response);
-        radioGroup = view.findViewById(R.id.radio_group_responses);
         Button addButton = view.findViewById(R.id.add_response_button);
 
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -84,9 +76,6 @@ public class MessageFragment extends Fragment {
         String customResponse = inputResponse.getText().toString().trim();
 
         if (!TextUtils.isEmpty(customResponse)) {
-            RadioButton radioButton = new RadioButton(requireContext());
-            radioButton.setText(customResponse);
-            radioGroup.addView(radioButton);
             saveResponses(customResponse);
             inputResponse.setText("");
         } else {
@@ -109,26 +98,11 @@ public class MessageFragment extends Fragment {
     private void addResponseFromPhoneMemory() {
         Set<String> savedResponses = getSavedResponses();
         for (String response : savedResponses) {
-            RadioButton radioButton = new RadioButton(requireContext());
-            radioButton.setText(response);
-            radioGroup.addView(radioButton);
         }
     }
 
     private void clearSavedResponses() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
-    }
-
-    private void hydrateContactListTextView(List<Contact> contacts) {
-        TextView contactListText = requireView().findViewById(R.id.contact_list);
-        StringBuilder contactList = new StringBuilder();
-        for (Contact contact : contacts) {
-            contactList.append(contact.getName());
-            if (contacts.indexOf(contact) != contacts.size() - 1) {
-                contactList.append(", ");
-            }
-        }
-        contactListText.append(contactList.toString());
     }
 }

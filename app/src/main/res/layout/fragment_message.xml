@@ -6,24 +6,11 @@
     tools:context=".fragments.MessageFragment">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".SelectResponseActivity"
         android:padding="20dp"
         >
-
-        <!-- textView de la liste des contact -->
-        <TextView
-            android:id="@+id/contact_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Programmation de message pour : "
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            />
 
         <!-- textView du titre -->
         <TextView
@@ -59,45 +46,6 @@
             android:layout_marginTop="5dp"
             />
 
-        <!-- textView du choix de type -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Choisir le type de réponse"
-            android:textSize="20dip"
-            android:layout_marginTop="40dp"
-            />
-
-        <!-- RadioGroup pour choisir le type de réponse -->
-        <RadioGroup
-            android:id="@+id/radio_group_responses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            >
-
-            <RadioButton
-                android:id="@+id/radio_button_spam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Spam"/>
-
-            <RadioButton
-                android:id="@+id/radio_button_auto_reply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Réponse automatique"/>
-        </RadioGroup>
-
-        <!-- Bouton de validation de la réponse automatique à envoyer -->
-        <Button
-            android:id="@+id/select_response_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Valider mon choix"
-            android:layout_marginTop="5dp"
-            />
     </LinearLayout>
 
 </FrameLayout>
