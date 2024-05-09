@@ -33,7 +33,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
             return responseTextView;
         }
 
-        TextView getAutomaticResponseCheckBox() {
+        CheckBox getAutomaticResponseCheckBox() {
             return automaticResponseCheckBox;
         }
 
@@ -42,31 +42,31 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         }
     }
 
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.response_recycler, viewGroup, false);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.response_recycler, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int pos) {
-        // Récupération de la réponse
-        Response response = responsesDataset.get(pos);
-
-        // Affichage de la réponse
-        viewHolder.getResponseTextView().setText(response.getText());
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Response response = responsesDataset.get(position);
+        holder.getResponseTextView().setText(response.getText());
+        // Définir l'état des cases à cocher en fonction de l'objet Response
+        holder.getAutomaticResponseCheckBox().setChecked(response.isAutomaticResponse());
+        holder.getSpamCheckBox().setChecked(response.isSpam());
     }
 
     @Override
     public int getItemCount() {
-        // Récupération du nombre de réponses
         return responsesDataset.size();
     }
 
-    public void updateContacts(List<Response> newData) {
-        // Mise à jour de la liste des réponses
+    public void updateResponses(List<Response> newData) {
+        // Affichage en console des réponses
+        for (Response response : newData) {
+            System.out.println(response.getText());
+        }
         responsesDataset.clear();
         responsesDataset.addAll(newData);
         notifyDataSetChanged();

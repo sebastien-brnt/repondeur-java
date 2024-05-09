@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,8 +18,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.repondeur_java.R;
+import com.example.repondeur_java.Response;
+import com.example.repondeur_java.ResponsesRecyclerAdapter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MessageFragment extends Fragment {
@@ -29,6 +35,8 @@ public class MessageFragment extends Fragment {
     private String mParam2;
 
     private EditText inputResponse;
+
+    private ResponsesRecyclerAdapter adapter;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -60,6 +68,13 @@ public class MessageFragment extends Fragment {
         inputResponse = view.findViewById(R.id.input_response);
         Button addButton = view.findViewById(R.id.add_response_button);
 
+        // Initialize adapter
+        adapter = new ResponsesRecyclerAdapter(new ArrayList<>());
+
+        RecyclerView recyclerView = view.findViewById(R.id.responses_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(adapter);
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,18 +87,20 @@ public class MessageFragment extends Fragment {
         return view;
     }
 
+
+
     private void addCustomResponse() {
         String customResponse = inputResponse.getText().toString().trim();
 
         if (!TextUtils.isEmpty(customResponse)) {
-            saveResponses(customResponse);
+            saveResponse(customResponse);
             inputResponse.setText("");
         } else {
             Toast.makeText(requireContext(), "Veuillez entrer une réponse", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void saveResponses(String response) {
+    private void saveResponse(String response) {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
         Set<String> responsesSet = getSavedResponses();
         responsesSet.add(response);
@@ -96,13 +113,27 @@ public class MessageFragment extends Fragment {
     }
 
     private void addResponseFromPhoneMemory() {
-        Set<String> savedResponses = getSavedResponses();
-        for (String response : savedResponses) {
-        }
+        // Mise à jour des réponses depuis la mémoire du téléphone
+        loadResponses();
     }
 
     private void clearSavedResponses() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
+    }
+
+    private void loadResponses() {
+        // Initialisation de la liste des réponses
+        List<Response> responsesList = new ArrayList<>();
+
+        // Ajout des réponses prédéfinies
+        responsesList.add(new Response("Je ne suis pas disponible pour le moment", false, false));
+        responsesList.add(new Response("Pas disponible, veuillez me recontacter", false, false));
+        responsesList.add(new Response("Bonjour à toi", false, false));
+        responsesList.add(new Response("C'est un message de test !", false, false));
+        responsesList.add(new Response("C'est un message qui sera automatique", false, false));
+
+        // Mise à jour de l'adaptateur avec la liste des réponses récupérées
+        adapter.updateResponses(responsesList);
     }
 }

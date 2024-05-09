@@ -20,12 +20,45 @@
             android:textSize="20dip"
             />
 
+        <!-- Titres de la liste -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Réponse"
+                android:textStyle="bold"
+                android:layout_marginRight="10dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spam"
+                android:textStyle="bold"
+                android:layout_marginRight="10dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Réponse automatique"
+                android:textStyle="bold"
+                android:layout_marginRight="10dp"
+                />
+        </LinearLayout>
+
         <!-- recyclerview pour afficher la liste des responses -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/responses_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             />
 
         <!-- EditText pour ajouter une réponse automatique personnalisée -->
