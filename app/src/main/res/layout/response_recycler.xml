@@ -4,25 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginTop="10dp"
-    >
+    android:layout_marginTop="10dp">
 
+    <!-- TextView pour afficher le texte de la réponse -->
     <TextView
         android:id="@+id/response_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Texte de la réponse"
         android:layout_marginRight="10dp"
-        />
+        android:layout_weight="30" />
+
+    <!-- Espace pour séparer les vues -->
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
 
     <!-- CheckBox pour définir comme spam -->
-    <CheckBox android:id="@+id/spam_checkbox"
+    <CheckBox
+        android:id="@+id/spam_checkbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <!-- CheckBox pour définir comme réponse automatique -->
-    <CheckBox android:id="@+id/automation_checkbox"
+    <CheckBox
+        android:id="@+id/automation_checkbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -22,35 +22,39 @@
 
         <!-- Titres de la liste -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="30dp"
             >
 
             <TextView
+                android:id="@+id/response_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Réponse"
-                android:textStyle="bold"
                 android:layout_marginRight="10dp"
-                />
+                android:textStyle="bold" />
+
+            <!-- Espace pour séparer les vues -->
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Spam"
                 android:textStyle="bold"
-                android:layout_marginRight="10dp"
-                />
+                android:layout_marginRight="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Réponse automatique"
+                android:text="Automatique"
                 android:textStyle="bold"
-                android:layout_marginRight="10dp"
-                />
+                android:layout_marginRight="10dp" />
         </LinearLayout>
 
         <!-- recyclerview pour afficher la liste des responses -->
@@ -68,6 +72,7 @@
             android:layout_height="wrap_content"
             android:inputType="textCapSentences|textAutoCorrect"
             android:hint="Ajouter une réponse personnalisée"
+            android:layout_marginTop="30dp"
             />
 
         <!-- Bouton d'ajout de nouvelle réponse personnalisée -->
