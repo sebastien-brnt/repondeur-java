@@ -1,44 +1,46 @@
 package com.example.repondeur_java.fragments;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.repondeur_java.Contact;
 import com.example.repondeur_java.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MessageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class MessageFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EditText inputResponse;
+    private RadioGroup radioGroup;
 
     public MessageFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MessageFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MessageFragment newInstance(String param1, String param2) {
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
@@ -60,7 +62,73 @@ public class MessageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_message, container, false);
+        View view = inflater.inflate(R.layout.fragment_message, container, false);
+
+        inputResponse = view.findViewById(R.id.input_response);
+        radioGroup = view.findViewById(R.id.radio_group_responses);
+        Button addButton = view.findViewById(R.id.add_response_button);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCustomResponse();
+            }
+        });
+
+        addResponseFromPhoneMemory();
+
+        return view;
+    }
+
+    private void addCustomResponse() {
+        String customResponse = inputResponse.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(customResponse)) {
+            RadioButton radioButton = new RadioButton(requireContext());
+            radioButton.setText(customResponse);
+            radioGroup.addView(radioButton);
+            saveResponses(customResponse);
+            inputResponse.setText("");
+        } else {
+            Toast.makeText(requireContext(), "Veuillez entrer une réponse", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveResponses(String response) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
+        Set<String> responsesSet = getSavedResponses();
+        responsesSet.add(response);
+        sharedPreferences.edit().putStringSet("responses", responsesSet).apply();
+    }
+
+    private Set<String> getSavedResponses() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
+        return sharedPreferences.getStringSet("responses", new HashSet<String>());
+    }
+
+    private void addResponseFromPhoneMemory() {
+        Set<String> savedResponses = getSavedResponses();
+        for (String response : savedResponses) {
+            RadioButton radioButton = new RadioButton(requireContext());
+            radioButton.setText(response);
+            radioGroup.addView(radioButton);
+        }
+    }
+
+    private void clearSavedResponses() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+    }
+
+    private void hydrateContactListTextView(List<Contact> contacts) {
+        TextView contactListText = requireView().findViewById(R.id.contact_list);
+        StringBuilder contactList = new StringBuilder();
+        for (Contact contact : contacts) {
+            contactList.append(contact.getName());
+            if (contacts.indexOf(contact) != contacts.size() - 1) {
+                contactList.append(", ");
+            }
+        }
+        contactListText.append(contactList.toString());
     }
 }
