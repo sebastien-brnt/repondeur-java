@@ -25,13 +25,4 @@
         android:layout_marginTop="30dp"
         />
 
-    <!-- Bouton pour envoyer un message aux contacts sélectionnés -->
-    <Button
-        android:id="@+id/select_response_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Sélectionner une réponse"
-        android:layout_marginTop="50dp"
-        />
-
 </LinearLayout>

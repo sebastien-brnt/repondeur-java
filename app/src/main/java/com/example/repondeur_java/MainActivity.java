@@ -83,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Récupération du bouton de passage à l'activité de réponse
-        Button button = findViewById(R.id.select_response_button);
-
         // Création du RecyckerView pour la liste des messages
         RecyclerView rc_view = findViewById(R.id.contacts_recycler);
         rc_view.setLayoutManager(new LinearLayoutManager(this));
@@ -98,27 +95,6 @@ public class MainActivity extends AppCompatActivity {
             // Chargement des contacts
             loadContacts();
         }
-
-        // Passage à l'activité de réponse au clic sur le bouton
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Récupération des contacts sélectionnés
-                ArrayList<Contact> contacts;
-                contacts = adapter.getSelectedContacts();
-
-                Intent intent = new Intent(MainActivity.this, SelectResponseActivity.class);
-
-                // Envoi de la liste des contacts sélectionnés à l'activité suivante
-                intent.putParcelableArrayListExtra("contactsList", contacts);
-                startActivity(intent);
-
-            }
-        });
-
-
-
-
 
     }
 }
