@@ -20,6 +20,25 @@
             android:textSize="20dip"
             />
 
+        <!-- EditText pour ajouter une réponse automatique personnalisée -->
+        <EditText
+            android:id="@+id/input_response"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:hint="Ajouter une réponse personnalisée"
+            android:layout_marginTop="30dp"
+            />
+
+        <!-- Bouton d'ajout de nouvelle réponse personnalisée -->
+        <Button
+            android:id="@+id/add_response_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Ajouter une réponse"
+            android:layout_marginTop="5dp"
+            />
+
         <!-- Titres de la liste -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,25 +82,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            />
-
-        <!-- EditText pour ajouter une réponse automatique personnalisée -->
-        <EditText
-            android:id="@+id/input_response"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapSentences|textAutoCorrect"
-            android:hint="Ajouter une réponse personnalisée"
-            android:layout_marginTop="30dp"
-            />
-
-        <!-- Bouton d'ajout de nouvelle réponse personnalisée -->
-        <Button
-            android:id="@+id/add_response_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Ajouter une réponse"
-            android:layout_marginTop="5dp"
             />
 
     </LinearLayout>
