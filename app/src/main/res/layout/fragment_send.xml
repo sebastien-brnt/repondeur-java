@@ -5,10 +5,44 @@
     android:layout_height="match_parent"
     tools:context=".fragments.SendFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Send fragment" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        >
+
+        <!-- textView du titre -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Paramétrage des envois"
+            android:textSize="20dip"
+            />
+
+        <!-- Liste déroulantes des contacts sélectionnés -->
+        <Spinner
+            android:id="@+id/contacts_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp" />
+
+        <!-- Bouton d'envoi de message Spam -->
+        <Button
+            android:id="@+id/send_spam"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Envoyer le message Spam"
+            android:layout_marginTop="30dp" />
+
+        <!-- Bouton d'activation de la réponse automatique -->
+        <Button
+            android:id="@+id/send_automatic_response"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Activation réponse automatique"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
 
 </FrameLayout>

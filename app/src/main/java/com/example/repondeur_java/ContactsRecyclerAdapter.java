@@ -1,24 +1,25 @@
 package com.example.repondeur_java;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ViewHolder> {
-    private List<Contact> contactsDataset;
-    private ArrayList<Contact> selectedContacts;
+    private final List<Contact> contactsDataset;
+    private final List<Contact> selectedContacts;
 
-    public ContactsRecyclerAdapter(List<Contact> dataset) {
-        contactsDataset = dataset;
-        selectedContacts = new ArrayList<>();
+    public ContactsRecyclerAdapter(List<Contact> dataset, List<Contact> selectedContacts) {
+        this.contactsDataset = dataset;
+        this.selectedContacts = selectedContacts;
+        Log.d("ContactsRecyclerAdapter", "ContactsRecyclerAdapter: " + selectedContacts.size() + " contacts");
+        Log.d("ContactsRecyclerAdapter", "ContactsRecyclerAdapter: " + selectedContacts.toString() + " contacts");
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -46,7 +47,6 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         }
     }
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
@@ -56,12 +56,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int pos) {
-        // Récupération du contact
         Contact contact = contactsDataset.get(pos);
-
-        // Mise à jour des informations du contact dans la vue
         if (contact != null && viewHolder != null) {
-            // Récupération des éléments de la vue
             TextView nomTextView = viewHolder.getNomTextView();
             TextView numTelTextView = viewHolder.getNumTelTextView();
             CheckBox contactCheckBox = viewHolder.getCheckBox();
@@ -74,19 +70,21 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
                 numTelTextView.setText(contact.getPhoneNumber() != null ? contact.getPhoneNumber() : "");
             }
 
-            // Mise à jour de la checkbox
-            contactCheckBox.setChecked(contact.isSelected());
-            contactCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    contact.setSelected(isChecked);
+            // Vérifier si le contact est dans la liste des contacts sélectionnés
+            if (selectedContacts.contains(contact)) {
+                // Si le contact est sélectionné, cocher la case
+                contactCheckBox.setChecked(true);
+            } else {
+                // Sinon, décocher la case
+                contactCheckBox.setChecked(false);
+            }
 
-                    // Si la checkbox est cochée, on ajoute le contact à la liste des contacts sélectionnés
-                    if (isChecked) {
-                        selectedContacts.add(contact);
-                    } else {
-                        selectedContacts.remove(contact);
-                    }
+            contactCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                contact.setSelected(isChecked);
+                if (isChecked) {
+                    selectedContacts.add(contact);
+                } else {
+                    selectedContacts.remove(contact);
                 }
             });
         }
@@ -94,16 +92,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     @Override
     public int getItemCount() {
-        // Récupération du nombre de contacts
         return contactsDataset.size();
     }
 
-    public ArrayList<Contact> getSelectedContacts() {
-        return selectedContacts;
-    }
-
     public void updateContacts(List<Contact> newData) {
-        // Mise à jour de la liste des contacts
         contactsDataset.clear();
         contactsDataset.addAll(newData);
         notifyDataSetChanged();

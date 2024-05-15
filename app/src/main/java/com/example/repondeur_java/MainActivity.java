@@ -12,9 +12,11 @@ import com.example.repondeur_java.fragments.ContactsFragment;
 import com.example.repondeur_java.fragments.MessageFragment;
 import com.example.repondeur_java.fragments.SendFragment;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
-    ActivityMainBinding binding;
+public class MainActivity extends AppCompatActivity {
+    private ArrayList<Contact> selectedContacts = new ArrayList<>();
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         replaceFragment(new ContactsFragment());
 
-        // Gestion de la navigation entre les fragments
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
-
                 case R.id.contacts:
                     replaceFragment(new ContactsFragment());
                     return true;
@@ -39,18 +39,22 @@ public class MainActivity extends AppCompatActivity {
                     replaceFragment(new SendFragment());
                     return true;
             }
-
             return false;
         });
     }
 
-    // Gestion des fragments
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        // Remplacement du fragment actuel par le nouveau dans le FrameLayout
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    public ArrayList<Contact> getSelectedContacts() {
+        return selectedContacts;
+    }
+
+    public void setSelectedContacts(ArrayList<Contact> selectedContacts) {
+        this.selectedContacts = selectedContacts;
     }
 }
