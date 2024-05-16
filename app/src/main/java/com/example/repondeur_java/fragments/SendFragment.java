@@ -50,7 +50,7 @@ public class SendFragment extends Fragment {
         Button sendSpamButton = view.findViewById(R.id.send_spam);
         Button automaticResponseButton = view.findViewById(R.id.send_automatic_response);
 
-        // Configure les actions des boutons
+        // Gestion du clic sur le bouton "Envoyer spam"
         sendSpamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +62,7 @@ public class SendFragment extends Fragment {
             }
         });
 
+        // Gestion du clic sur le bouton "Activation réponse automatique"
         automaticResponseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +83,7 @@ public class SendFragment extends Fragment {
         for (Contact contact : selectedContacts) {
             contactNames.add(contact.getName());
         }
+
         spinnerAdapter.clear();
         spinnerAdapter.addAll(contactNames);
         spinnerAdapter.notifyDataSetChanged();
