@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.example.repondeur_java.Contact;
 import com.example.repondeur_java.R;
 import java.util.ArrayList;
@@ -37,7 +39,12 @@ public class SendFragment extends Fragment {
 
         // Ajoute les contacts sélectionnés dans le spinner
         ArrayList<Contact> selectedContacts = ((com.example.repondeur_java.MainActivity) getActivity()).getSelectedContacts();
-        updateSelectedContacts(selectedContacts);
+        if (selectedContacts != null && !selectedContacts.isEmpty()) {
+            updateSelectedContacts(selectedContacts);
+        } else {
+            // Item par défaut
+            spinnerAdapter.add("Aucun contact sélectionné");
+        }
 
         // Configure les boutons
         Button sendSpamButton = view.findViewById(R.id.send_spam);
@@ -47,14 +54,22 @@ public class SendFragment extends Fragment {
         sendSpamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Action à effectuer lors du clic sur le bouton "Envoyer le message Spam"
+                if (selectedContacts.isEmpty()) {
+                    Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
+                } else {
+                    // TODO: Action à effectuer lors du clic sur le bouton "Envoyer spam"
+                }
             }
         });
 
         automaticResponseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Action à effectuer lors du clic sur le bouton "Activation réponse automatique"
+                if (selectedContacts.isEmpty()) {
+                    Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
+                } else {
+                    // TODO: Action à effectuer lors du clic sur le bouton "Activation réponse automatique"
+                }
             }
         });
 
