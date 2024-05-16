@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.Response;
 import com.example.repondeur_java.ResponsesRecyclerAdapter;
@@ -28,12 +29,7 @@ import java.util.Set;
 
 public class MessageFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
+    private ArrayList<Response> responsesList;
     private EditText inputResponse;
 
     private ResponsesRecyclerAdapter adapter;
@@ -42,22 +38,10 @@ public class MessageFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static MessageFragment newInstance(String param1, String param2) {
-        MessageFragment fragment = new MessageFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        responsesList = ((MainActivity) requireActivity()).getResponsesList();
     }
 
     @Override
@@ -123,17 +107,27 @@ public class MessageFragment extends Fragment {
     }
 
     private void loadResponses() {
-        // Initialisation de la liste des réponses
-        List<Response> responsesList = new ArrayList<>();
+        // Si la liste des responses n'a pas été chargée, on la charge
+        if (responsesList.size() == 0) {
+            // Initialisation de la liste des réponses
+            ArrayList<Response> responses = new ArrayList<>();
 
-        // Ajout des réponses prédéfinies
-        responsesList.add(new Response("Je ne suis pas disponible pour le moment", false, false));
-        responsesList.add(new Response("Pas disponible, veuillez me recontacter", false, false));
-        responsesList.add(new Response("Bonjour à toi", false, false));
-        responsesList.add(new Response("C'est un message de test !", false, false));
-        responsesList.add(new Response("C'est un message qui sera automatique", false, false));
+            // Ajout des réponses prédéfinies
+            responses.add(new Response("Je ne suis pas disponible pour le moment", false, false));
+            responses.add(new Response("Pas disponible, veuillez me recontacter", false, false));
+            responses.add(new Response("Bonjour à toi", false, false));
+            responses.add(new Response("C'est un message de test !", false, false));
+            responses.add(new Response("C'est un message qui sera automatique", false, false));
 
-        // Mise à jour de l'adaptateur avec la liste des réponses récupérées
-        adapter.updateResponses(responsesList);
+            // Mis à jour de la liste des réponses
+            ((MainActivity) requireActivity()).setResponsesList(responses);
+
+            // Mise à jour de l'adaptateur avec la liste des réponses récupérées
+            responsesList = ((MainActivity) requireActivity()).getResponsesList();
+            adapter.updateResponses(responsesList);
+        } else {
+            // Mise à jour de l'adapter avec la liste des contacts déjà chargés
+            adapter.updateResponses(responsesList);
+        }
     }
 }

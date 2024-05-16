@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Contact> selectedContacts = new ArrayList<>();
     private ArrayList<Contact> contactsList = new ArrayList<>();
+    private ArrayList<Response> responsesList = new ArrayList<>();
     private ActivityMainBinding binding;
 
     @Override
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         replaceFragment(new ContactsFragment());
 
+        // Gestion de la navigation entre les 3 fragments (Contacts, Message, Send)
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.contacts:
@@ -66,5 +68,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setContactsList(ArrayList<Contact> contacts) {
         this.contactsList = contacts;
+    }
+
+    public ArrayList<Response> getResponsesList() {
+        return responsesList;
+    }
+
+    public void setResponsesList(ArrayList<Response> responses) {
+        this.responsesList = responses;
     }
 }
