@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class ContactsFragment extends Fragment {
 
     private ArrayList<Contact> dataset = new ArrayList<>();
     private ArrayList<Contact> selectedContacts;
+    private ArrayList<Contact> contactsList;
     private ContactsRecyclerAdapter adapter;
 
     public ContactsFragment() {
@@ -44,6 +46,7 @@ public class ContactsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         selectedContacts = ((MainActivity) requireActivity()).getSelectedContacts();
+        contactsList = ((MainActivity) requireActivity()).getContactsList();
         adapter = new ContactsRecyclerAdapter(dataset, selectedContacts);
         recyclerView.setAdapter(adapter);
 
@@ -74,30 +77,40 @@ public class ContactsFragment extends Fragment {
     }
 
     private void loadContacts() {
-        ArrayList<Contact> contactList = new ArrayList<>();
-        ContentResolver resolver = requireActivity().getContentResolver();
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        Cursor cursor = resolver.query(uri, null, null, null, null);
+        // Si la liste des contacts n'a pas été chargée, on la récupère
+        if (contactsList.size() == 0) {
+            ArrayList<Contact> contactList = new ArrayList<>();
+            ContentResolver resolver = requireActivity().getContentResolver();
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            Cursor cursor = resolver.query(uri, null, null, null, null);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            int columnNameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-            int columnNumberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnNameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                int columnNumberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-            do {
-                // Récupération du nom et du numéro de téléphone
-                String name = cursor.getString(columnNameIndex);
-                String phoneNumber = cursor.getString(columnNumberIndex);
+                do {
+                    // Récupération du nom et du numéro de téléphone
+                    String name = cursor.getString(columnNameIndex);
+                    String phoneNumber = cursor.getString(columnNumberIndex);
 
-                // Création du contact et ajout à la liste
-                Contact contact = new Contact(name, phoneNumber);
-                contactList.add(contact);
-            } while (cursor.moveToNext());
+                    // Création du contact et ajout à la liste
+                    Contact contact = new Contact(name, phoneNumber);
+                    contactList.add(contact);
+                } while (cursor.moveToNext());
 
-            cursor.close();
+                cursor.close();
+            }
+
+            // Mise à jour de la liste des contacts
+            ((com.example.repondeur_java.MainActivity) getActivity()).setContactsList(contactList);
+
+            // Mise à jour de l'adapter avec la liste des contacts récupérés
+            contactsList = ((com.example.repondeur_java.MainActivity) getActivity()).getContactsList();
+            adapter.updateContacts(contactsList);
+        } else {
+            // Mise à jour de l'adapter avec la liste des contacts déjà chargés
+            adapter.updateContacts(contactsList);
         }
-
-        // Mise à jour de l'adapter avec la liste des contacts récupérés
-        adapter.updateContacts(contactList);
     }
 
     public void updateSelectedContacts(ArrayList<Contact> selectedContacts) {

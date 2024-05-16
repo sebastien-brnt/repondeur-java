@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.repondeur_java.databinding.ActivityMainBinding;
 import com.example.repondeur_java.fragments.ContactsFragment;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Contact> selectedContacts = new ArrayList<>();
+    private ArrayList<Contact> contactsList = new ArrayList<>();
     private ActivityMainBinding binding;
 
     @Override
@@ -56,5 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setSelectedContacts(ArrayList<Contact> selectedContacts) {
         this.selectedContacts = selectedContacts;
+    }
+
+    public ArrayList<Contact> getContactsList() {
+        return contactsList;
+    }
+
+    public void setContactsList(ArrayList<Contact> contacts) {
+        this.contactsList = contacts;
     }
 }
