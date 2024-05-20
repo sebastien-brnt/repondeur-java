@@ -77,4 +77,13 @@ public class MainActivity extends AppCompatActivity {
     public void setResponsesList(ArrayList<Response> responses) {
         this.responsesList = responses;
     }
+
+    public Response getSpamResponse() {
+        for (Response response : responsesList) {
+            if (response.isSpam()) {
+                return response;
+            }
+        }
+        return null;
+    }
 }
