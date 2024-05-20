@@ -21,6 +21,7 @@ import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.Response;
 import com.example.repondeur_java.ResponsesRecyclerAdapter;
+import com.example.repondeur_java.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -89,19 +90,15 @@ public class MessageFragment extends Fragment {
         responsesList.add(new Response(response, false, false));
         ((MainActivity) requireActivity()).setResponsesList(responsesList);
 
+        // Sauvegarder la liste des réponses dans SharedPreferences
+        Utils.saveResponses(requireContext(), responsesList);
+
         // Mise à jour de l'adaptateur avec la nouvelle réponse
         this.loadResponses();
-
-        // Ajout de la réponse à la mémoire du téléphone
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
-        Set<String> responsesSet = getSavedResponses();
-        responsesSet.add(response);
-        sharedPreferences.edit().putStringSet("responses", responsesSet).apply();
     }
 
-    private Set<String> getSavedResponses() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
-        return sharedPreferences.getStringSet("responses", new HashSet<String>());
+    private ArrayList<Response> getSavedResponses() {
+        return Utils.getResponses(requireContext());
     }
 
     private void addResponseFromPhoneMemory() {
@@ -115,8 +112,11 @@ public class MessageFragment extends Fragment {
     }
 
     private void loadResponses() {
+        // Récupération de la liste des réponses
+        responsesList = this.getSavedResponses();
+
         // Si la liste des responses n'a pas été chargée, on la charge
-        if (responsesList.size() == 0) {
+        if (responsesList == null || responsesList.size() == 0) {
             // Initialisation de la liste des réponses
             ArrayList<Response> responses = new ArrayList<>();
 
@@ -127,11 +127,11 @@ public class MessageFragment extends Fragment {
             responses.add(new Response("C'est un message de test !", false, false));
             responses.add(new Response("C'est un message qui sera automatique", false, false));
 
-            // Mis à jour de la liste des réponses
+            // Mise à jour de la liste des réponses
             ((MainActivity) requireActivity()).setResponsesList(responses);
-
-            // Mise à jour de l'adaptateur avec la liste des réponses récupérées
             responsesList = ((MainActivity) requireActivity()).getResponsesList();
+            Utils.saveResponses(requireContext(), responsesList);
+
             adapter.updateResponses(responsesList);
         } else {
             // Mise à jour de l'adapter avec la liste des contacts déjà chargés
