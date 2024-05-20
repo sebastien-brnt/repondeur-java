@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
-public class Utils {
+public class UtilsMessage {
 
     private static final String PREFS_NAME = "responses_prefs";
     private static final String RESPONSES_KEY = "responses_key";

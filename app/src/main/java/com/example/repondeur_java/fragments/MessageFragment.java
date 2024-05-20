@@ -1,7 +1,6 @@
 package com.example.repondeur_java.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +20,9 @@ import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.Response;
 import com.example.repondeur_java.ResponsesRecyclerAdapter;
-import com.example.repondeur_java.utils.Utils;
+import com.example.repondeur_java.utils.UtilsMessage;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class MessageFragment extends Fragment {
 
@@ -92,14 +87,14 @@ public class MessageFragment extends Fragment {
         ((MainActivity) requireActivity()).setResponsesList(responsesList);
 
         // Sauvegarder la liste des réponses dans SharedPreferences
-        Utils.saveResponses(requireContext(), responsesList);
+        UtilsMessage.saveResponses(requireContext(), responsesList);
 
         // Mise à jour de l'adaptateur avec la nouvelle réponse
         this.loadResponses();
     }
 
     private ArrayList<Response> getSavedResponses() {
-        return Utils.getResponses(requireContext());
+        return UtilsMessage.getResponses(requireContext());
     }
 
     private void addResponseFromPhoneMemory() {
@@ -114,7 +109,7 @@ public class MessageFragment extends Fragment {
 
     private void loadResponses() {
         // Récupération de la liste des réponses
-        responsesList = Utils.getResponses(requireContext());
+        responsesList = UtilsMessage.getResponses(requireContext());
 
         // Si la liste des responses n'a pas été chargée, on la charge
         if (responsesList == null || responsesList.size() == 0) {
@@ -131,7 +126,7 @@ public class MessageFragment extends Fragment {
             // Mise à jour de la liste des réponses
             ((MainActivity) requireActivity()).setResponsesList(responses);
             responsesList = ((MainActivity) requireActivity()).getResponsesList();
-            Utils.saveResponses(requireContext(), responsesList);
+            UtilsMessage.saveResponses(requireContext(), responsesList);
 
             adapter.updateResponses(responsesList);
         } else {

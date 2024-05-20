@@ -1,7 +1,6 @@
 package com.example.repondeur_java;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.repondeur_java.utils.Utils;
+import com.example.repondeur_java.utils.UtilsMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +99,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                 }
 
                 // Sauvegarder les réponses après la modification
-                Utils.saveResponses(context, new ArrayList<>(responsesDataset));
+                UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
             }
         });
 
@@ -139,7 +138,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                 }
 
                 // Sauvegarder les réponses après la modification
-                Utils.saveResponses(context, new ArrayList<>(responsesDataset));
+                UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
             }
         });
     }
