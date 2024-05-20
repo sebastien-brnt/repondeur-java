@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class MessageFragment extends Fragment {
         Button addButton = view.findViewById(R.id.add_response_button);
 
         // Initialize adapter
-        adapter = new ResponsesRecyclerAdapter(new ArrayList<>());
+        adapter = new ResponsesRecyclerAdapter(requireContext(), new ArrayList<>());
 
         RecyclerView recyclerView = view.findViewById(R.id.responses_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -113,7 +114,7 @@ public class MessageFragment extends Fragment {
 
     private void loadResponses() {
         // Récupération de la liste des réponses
-        responsesList = this.getSavedResponses();
+        responsesList = Utils.getResponses(requireContext());
 
         // Si la liste des responses n'a pas été chargée, on la charge
         if (responsesList == null || responsesList.size() == 0) {

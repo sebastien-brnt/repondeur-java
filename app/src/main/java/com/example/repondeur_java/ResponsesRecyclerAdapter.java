@@ -1,5 +1,6 @@
 package com.example.repondeur_java;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,17 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.repondeur_java.utils.Utils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecyclerAdapter.ViewHolder> {
     private List<Response> responsesDataset;
+    private Context context;
 
-    public ResponsesRecyclerAdapter(List<Response> dataset) {
+    public ResponsesRecyclerAdapter(Context context, List<Response> dataset) {
+        this.context = context;
         responsesDataset = dataset;
     }
 
@@ -63,7 +69,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         holder.getAutomaticResponseCheckBox().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean responseCkecked = false;
+                boolean responseChecked = false;
 
                 // Récupération de l'info si la case est cochée
                 boolean checkboxIsChecked = holder.getAutomaticResponseCheckBox().isChecked();
@@ -72,12 +78,12 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                     // Vérification si une réponse automatique est déjà activée
                     for (Response r : responsesDataset) {
                         if (r.isAutomaticResponse()) {
-                            responseCkecked = true;
+                            responseChecked = true;
                             break;
                         }
                     }
 
-                    if (responseCkecked) {
+                    if (responseChecked) {
                         // Si une réponse automatique est déjà activée, on désactive celle-ci
                         Toast.makeText(v.getContext(), "Une seule réponse automatique est autorisée", Toast.LENGTH_SHORT).show();
                         response.setAutomaticResponse(false);
@@ -86,12 +92,15 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                         holder.getAutomaticResponseCheckBox().setChecked(false);
                     } else {
                         // Sinon, on active la réponse automatique
-                        response.setAutomaticResponse(!response.isAutomaticResponse());
+                        response.setAutomaticResponse(true);
                     }
                 } else {
                     // Si la case est décochée, on désactive la réponse automatique
                     response.setAutomaticResponse(false);
                 }
+
+                // Sauvegarder les réponses après la modification
+                Utils.saveResponses(context, new ArrayList<>(responsesDataset));
             }
         });
 
@@ -99,35 +108,38 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         holder.getSpamCheckBox().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean responseCkecked = false;
+                boolean responseChecked = false;
 
                 // Récupération de l'info si la case est cochée
                 boolean checkboxIsChecked = holder.getSpamCheckBox().isChecked();
 
                 if (checkboxIsChecked) {
-                    // Vérification si un spam est déjà activée
+                    // Vérification si un spam est déjà activé
                     for (Response r : responsesDataset) {
                         if (r.isSpam()) {
-                            responseCkecked = true;
+                            responseChecked = true;
                             break;
                         }
                     }
 
-                    if (responseCkecked) {
-                        // Si un spam est déjà activée, on le désactive
-                        Toast.makeText(v.getContext(), "Un seul spam est autorisée", Toast.LENGTH_SHORT).show();
+                    if (responseChecked) {
+                        // Si un spam est déjà activé, on le désactive
+                        Toast.makeText(v.getContext(), "Un seul spam est autorisé", Toast.LENGTH_SHORT).show();
                         response.setSpam(false);
 
                         // On désactive la case à cocher
                         holder.getSpamCheckBox().setChecked(false);
                     } else {
-                        // Sinon, on active la réponse automatique
-                        response.setSpam(!response.isSpam());
+                        // Sinon, on active le spam
+                        response.setSpam(true);
                     }
                 } else {
                     // Si la case est décochée, on désactive le spam
                     response.setSpam(false);
                 }
+
+                // Sauvegarder les réponses après la modification
+                Utils.saveResponses(context, new ArrayList<>(responsesDataset));
             }
         });
     }

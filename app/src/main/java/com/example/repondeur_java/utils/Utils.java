@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+
 public class Utils {
 
     private static final String PREFS_NAME = "responses_prefs";
@@ -30,7 +31,18 @@ public class Utils {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString(RESPONSES_KEY, null);
+
+        if (json == null) {
+            return new ArrayList<>();  // Retourne une liste vide si aucune donnée n'est trouvée
+        }
+
         Type type = new TypeToken<ArrayList<Response>>() {}.getType();
-        return gson.fromJson(json, type);
+        ArrayList<Response> responseList = gson.fromJson(json, type);
+
+        if (responseList == null) {
+            responseList = new ArrayList<>();  // Assurez-vous que la liste retournée n'est pas null
+        }
+
+        return responseList;
     }
 }
