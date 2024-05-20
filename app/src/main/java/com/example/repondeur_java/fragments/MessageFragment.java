@@ -85,6 +85,14 @@ public class MessageFragment extends Fragment {
     }
 
     private void saveResponse(String response) {
+        // Ajout de la réponse à la liste des réponses
+        responsesList.add(new Response(response, false, false));
+        ((MainActivity) requireActivity()).setResponsesList(responsesList);
+
+        // Mise à jour de l'adaptateur avec la nouvelle réponse
+        this.loadResponses();
+
+        // Ajout de la réponse à la mémoire du téléphone
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
         Set<String> responsesSet = getSavedResponses();
         responsesSet.add(response);
