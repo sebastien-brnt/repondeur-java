@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:orientation="horizontal"
     android:layout_marginTop="10dp">
 
@@ -10,10 +10,22 @@
     <TextView
         android:id="@+id/response_text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:text="Texte de la réponse"
         android:layout_marginRight="10dp"
         android:layout_weight="30" />
+
+    <!-- Icon pour supprimer la réponse -->
+    <ImageView
+        android:id="@+id/response_delete"
+        android:layout_width="38dp"
+        android:layout_height="36dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:src="@drawable/ic_delete"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="35dp"
+        />
 
     <!-- Espace pour séparer les vues -->
     <Space
@@ -30,7 +42,9 @@
     <!-- CheckBox pour définir comme réponse automatique -->
     <CheckBox
         android:id="@+id/automation_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        />
 
 </LinearLayout>

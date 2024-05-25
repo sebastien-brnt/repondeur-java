@@ -50,7 +50,7 @@
             <TextView
                 android:id="@+id/response_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Réponse"
                 android:layout_marginRight="10dp"
                 android:textStyle="bold" />
@@ -62,16 +62,26 @@
                 android:layout_weight="1" />
 
             <TextView
+                android:id="@+id/response_delete"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Suppression"
+                android:layout_marginRight="20dp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Spam"
                 android:textStyle="bold"
                 android:layout_marginRight="10dp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="85dp"
                 android:layout_height="wrap_content"
-                android:text="Automatique"
+                android:text="Réponse automatique"
+                android:textAlignment="center"
                 android:textStyle="bold"
                 android:layout_marginRight="10dp" />
         </LinearLayout>
