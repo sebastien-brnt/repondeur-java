@@ -12,6 +12,7 @@ import com.example.repondeur_java.databinding.ActivityMainBinding;
 import com.example.repondeur_java.fragments.ContactsFragment;
 import com.example.repondeur_java.fragments.MessageFragment;
 import com.example.repondeur_java.fragments.SendFragment;
+import com.example.repondeur_java.utils.UtilsMessage;
 
 import java.util.ArrayList;
 
@@ -79,7 +80,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Response getSpamResponse() {
-        for (Response response : responsesList) {
+        // Récupération des réponses
+        ArrayList<Response> responses = UtilsMessage.getResponses(this);
+
+        // Recherche de la réponse cochée comme spam
+        for (Response response : responses) {
+            Log.d("Responses",  response.getText());
             if (response.isSpam()) {
                 return response;
             }

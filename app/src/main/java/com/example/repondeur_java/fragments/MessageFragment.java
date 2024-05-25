@@ -69,7 +69,7 @@ public class MessageFragment extends Fragment {
     }
 
 
-
+    // Ajout de la réponse personnalisée
     private void addCustomResponse() {
         String customResponse = inputResponse.getText().toString().trim();
 
@@ -81,6 +81,7 @@ public class MessageFragment extends Fragment {
         }
     }
 
+    // Sauvegarde de la réponse
     private void saveResponse(String response) {
         // Ajout de la réponse à la liste des réponses
         responsesList.add(new Response(response, false, false));

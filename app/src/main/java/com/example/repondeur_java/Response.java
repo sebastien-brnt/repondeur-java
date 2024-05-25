@@ -1,5 +1,7 @@
 package com.example.repondeur_java;
 
+import android.util.Log;
+
 public class Response {
     private String text;
     private boolean isSpam;
