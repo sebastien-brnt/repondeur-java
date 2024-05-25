@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +29,13 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         private final TextView responseTextView;
         private final CheckBox automaticResponseCheckBox;
         private final CheckBox spamCheckBox;
+        private final ImageView deleteButton;
 
         ViewHolder(View v) {
             super(v);
             responseTextView = v.findViewById(R.id.response_text);
             automaticResponseCheckBox = v.findViewById(R.id.automation_checkbox);
+            deleteButton = v.findViewById(R.id.response_delete);
             spamCheckBox = v.findViewById(R.id.spam_checkbox);
         }
 
@@ -42,6 +45,9 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
 
         CheckBox getAutomaticResponseCheckBox() {
             return automaticResponseCheckBox;
+        }
+        ImageView getDeleteButton() {
+            return deleteButton;
         }
 
         CheckBox getSpamCheckBox() {
@@ -139,6 +145,17 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
 
                 // Sauvegarder les réponses après la modification
                 UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
+            }
+        });
+
+
+        // Gestion du click sur le bouton de suppression
+        holder.getDeleteButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                responsesDataset.remove(response);
+                UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
+                notifyDataSetChanged();
             }
         });
     }
