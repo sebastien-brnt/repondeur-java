@@ -1,6 +1,8 @@
 package com.example.repondeur_java.fragments;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
@@ -21,6 +23,8 @@ import com.example.repondeur_java.Contact;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.Response;
+import com.example.repondeur_java.utils.SmsReceiver;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -69,24 +73,21 @@ public class SendFragment extends Fragment {
                 if (selectedContacts == null || selectedContacts.isEmpty()) {
                     Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Récupération de la réponse cochée comme spam
-                    Response spamResponse = ((MainActivity) getActivity()).getSpamResponse();
-
-                    // Si une réponse est cochée comme spam, on envoie un SMS au premier contact sélectionné
-                    if (spamResponse != null) {
-                        String phoneNumber = selectedContacts.get(0).getPhoneNumber(); // Ex: envoie au premier contact sélectionné
-                        String message = spamResponse.getText();
-                        if (checkSMSPermission()) {
+                    if (checkSMSPermissions()) {
+                        // Récupération de la réponse cochée comme spam
+                        Response spamResponse = ((MainActivity) getActivity()).getSpamResponse();
+                        if (spamResponse != null) {
+                            String phoneNumber = selectedContacts.get(0).getPhoneNumber(); // Ex: envoie au premier contact sélectionné
+                            String message = spamResponse.getText();
                             // Envoi du message 4 fois
                             for (int i = 0; i < 4; i++) {
                                 sendSMS(phoneNumber, message);
                             }
                         } else {
-                            requestSMSPermission();
+                            Toast.makeText(getContext(), "Aucune réponse marquée comme spam trouvée", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        // Message d'erreur si aucune réponse n'est cochée comme spam
-                        Toast.makeText(getContext(), "Aucune réponse marquée comme spam trouvée", Toast.LENGTH_SHORT).show();
+                        requestSMSPermissions();
                     }
                 }
             }
@@ -99,24 +100,21 @@ public class SendFragment extends Fragment {
                 if (selectedContacts == null || selectedContacts.isEmpty()) {
                     Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
                 } else {
-                    // TODO: Action à effectuer lors du clic sur le bouton "Activation réponse automatique"
+                    Response autoResponse = ((MainActivity) getActivity()).getAutoResponse();
+                    if (autoResponse != null) {
+                        // Enregistrer les contacts sélectionnés et le message de réponse automatique dans les SharedPreferences
+                        saveAutomaticContact(selectedContacts);
+                        saveAutoResponseMessage(autoResponse.getText());
+
+                        Toast.makeText(getContext(), "Réponse automatique activée pour le contact sélectionné.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Aucune réponse automatique trouvée", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
         return view;
-    }
-
-    // Méthode pour mettre à jour les contacts sélectionnés dans le spinner
-    public void updateSelectedContacts(ArrayList<Contact> selectedContacts) {
-        ArrayList<String> contactNames = new ArrayList<>();
-        for (Contact contact : selectedContacts) {
-            contactNames.add(contact.getName());
-        }
-
-        spinnerAdapter.clear();
-        spinnerAdapter.addAll(contactNames);
-        spinnerAdapter.notifyDataSetChanged();
     }
 
     // Méthode pour envoyer un SMS
@@ -131,28 +129,71 @@ public class SendFragment extends Fragment {
         }
     }
 
-    // Méthode pour vérifier la permission d'envoyer des SMS
-    private boolean checkSMSPermission() {
-        return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    // Méthode pour demander la permission d'envoyer des SMS
-    private void requestSMSPermission() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS)) {
-            Toast.makeText(getContext(), "La permission d'envoyer des SMS est nécessaire pour cette fonctionnalité.", Toast.LENGTH_SHORT).show();
+    // Méthode pour mettre à jour les contacts sélectionnés dans le spinner
+    public void updateSelectedContacts(ArrayList<Contact> selectedContacts) {
+        ArrayList<String> contactNames = new ArrayList<>();
+        for (Contact contact : selectedContacts) {
+            contactNames.add(contact.getName());
         }
-        requestPermissions(new String[]{Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+
+        spinnerAdapter.clear();
+        spinnerAdapter.addAll(contactNames);
+        spinnerAdapter.notifyDataSetChanged();
     }
 
-    // Méthode pour gérer la réponse de l'utilisateur à la demande de permission
+    // Méthode pour vérifier les permissions d'envoyer et de recevoir des SMS
+    private boolean checkSMSPermissions() {
+        boolean sendSMSPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+        boolean receiveSMSPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+        return sendSMSPermission && receiveSMSPermission;
+    }
+
+
+    // Méthode pour demander les permissions d'envoyer et de recevoir des SMS
+    private void requestSMSPermissions() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
+            Toast.makeText(getContext(), "Les permissions d'envoyer et de recevoir des SMS sont nécessaires pour cette fonctionnalité.", Toast.LENGTH_SHORT).show();
+        }
+        requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, SMS_PERMISSION_CODE);
+    }
+
+
+    // Méthode pour gérer la réponse de l'utilisateur à la demande de permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == SMS_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(), "Permission accordée. Vous pouvez maintenant envoyer des SMS.", Toast.LENGTH_SHORT).show();
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+            if (allPermissionsGranted) {
+                Toast.makeText(getContext(), "Permissions accordées. Vous pouvez maintenant envoyer et recevoir des SMS.", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Permission refusée. Vous ne pouvez pas envoyer de SMS.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Permissions refusées. Vous ne pouvez pas envoyer ou recevoir des SMS.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    // Méthode pour enregistrer les contacts sélectionnés
+    private void saveAutomaticContact(ArrayList<Contact> selectedContacts) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(selectedContacts);
+        editor.putString("automaticContact", json);
+        editor.apply();
+    }
+
+    // Méthode pour enregistrer le message de réponse automatique
+    private void saveAutoResponseMessage(String message) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("autoResponseMessage", message);
+        editor.apply();
     }
 }

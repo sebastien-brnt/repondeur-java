@@ -85,8 +85,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Recherche de la réponse cochée comme spam
         for (Response response : responses) {
-            Log.d("Responses",  response.getText());
             if (response.isSpam()) {
+                return response;
+            }
+        }
+        return null;
+    }
+
+    public Response getAutoResponse() {
+        // Récupération des réponses
+        ArrayList<Response> responses = UtilsMessage.getResponses(this);
+
+        // Recherche de la réponse cochée comme spam
+        for (Response response : responses) {
+            if (response.isAutomaticResponse()) {
                 return response;
             }
         }
