@@ -24,7 +24,7 @@ import java.util.Locale;
 public class SmsReceiver extends BroadcastReceiver {
 
     private static final String TAG = "SmsReceiver";
-    private ArrayList<Contact> selectedContacts;
+    private ArrayList<Contact> recipients;
     private String autoResponseMessage;
 
 
@@ -38,9 +38,6 @@ public class SmsReceiver extends BroadcastReceiver {
             retrieveSelectedContacts(context);
             retrieveAutoResponseMessage(context);
 
-            Log.d(TAG, "Message received");
-            Log.d(TAG, "Selected contacts: " + selectedContacts);
-
             // Récupération des informations du message reçu
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
@@ -50,7 +47,10 @@ public class SmsReceiver extends BroadcastReceiver {
                     messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i], bundle.getString("format"));
                     String sender = messages[i].getOriginatingAddress();
 
-                    Log.d(TAG, "Message from: " + sender);
+                    Log.d(TAG, "Message reçu de : " + sender);
+                    Log.d(TAG, "Envoi du message à : " + recipients);
+                    Log.d(TAG, "Message a envoyer : " + autoResponseMessage);
+
 
                     if (isContactSelected(sender)) {
                         Log.d(TAG, "Sender is a selected contact. Sending auto-response.");
@@ -67,19 +67,19 @@ public class SmsReceiver extends BroadcastReceiver {
      * Récupération des données
     **************************/
     private void retrieveSelectedContacts(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
-
+        // Récupération des contacts sélectionnés enregistrés dans SharedPreferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
         String json = sharedPreferences.getString("automaticContacts", null);
         Log.d("RetrieveContacts", "JSON récupéré: " + json);
 
         if (json != null) {
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<Contact>>() {}.getType();
-            selectedContacts = gson.fromJson(json, type);
-            Log.d("RetrieveContacts", "Contacts récupérés: " + selectedContacts);
+            recipients = gson.fromJson(json, type);
+            Log.d("RetrieveContacts", "Contacts récupérés: " + recipients);
         } else {
             Log.d("RetrieveContacts", "Aucun contact trouvé dans SharedPreferences.");
-            selectedContacts = new ArrayList<>();
+            recipients = new ArrayList<>();
         }
     }
 
@@ -103,8 +103,8 @@ public class SmsReceiver extends BroadcastReceiver {
             String normalizedSender = phoneUtil.format(senderNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
 
             // Vérification si le contact est dans la liste des contacts sélectionnés
-            if (selectedContacts != null) {
-                for (Contact contact : selectedContacts) {
+            if (recipients != null) {
+                for (Contact contact : recipients) {
 
                     // Normalisation du numéro de téléphone du contact
                     Phonenumber.PhoneNumber contactNumber = phoneUtil.parse(contact.getPhoneNumber(), Locale.getDefault().getCountry());

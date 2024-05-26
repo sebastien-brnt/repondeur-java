@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -234,17 +235,19 @@ public class SendFragment extends Fragment {
     }
 
 
-    /**************************
-     * Sauvegarde des contacts
-    **************************/
+    /****************************************
+     * Sauvegarde des contacts et du message
+    ****************************************/
     // Méthode pour enregistrer les contacts sélectionnés dans les SharedPreferences
     private void saveAutomaticContacts(ArrayList<Contact> selectedContacts) {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(selectedContacts);
         editor.putString("automaticContacts", json);
         editor.apply();
+
+        Log.d("SaveContacts", "Contacts enregistrés: " + json);
     }
 
     // Méthode pour enregistrer le message de réponse automatique dans les SharedPreferences
