@@ -27,6 +27,9 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         responsesDataset = dataset;
     }
 
+    /**************************
+     * Gestion ViewHolder
+    **************************/
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView responseTextView;
         private final CheckBox automaticResponseCheckBox;
@@ -107,7 +110,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                 }
 
                 // Sauvegarder les réponses après la modification
-                ResponsesManager.saveResponses(context, new ArrayList<>(responsesDataset));
+                ResponsesManager.setResponses(context, new ArrayList<>(responsesDataset));
             }
         });
 
@@ -146,7 +149,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                 }
 
                 // Sauvegarder les réponses après la modification
-                ResponsesManager.saveResponses(context, new ArrayList<>(responsesDataset));
+                ResponsesManager.setResponses(context, new ArrayList<>(responsesDataset));
             }
         });
 
@@ -156,17 +159,15 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
             @Override
             public void onClick(View v) {
                 responsesDataset.remove(response);
-                ResponsesManager.saveResponses(context, new ArrayList<>(responsesDataset));
+                ResponsesManager.setResponses(context, new ArrayList<>(responsesDataset));
                 notifyDataSetChanged();
             }
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return responsesDataset.size();
-    }
-
+    /**********************************
+     * Mise à jour liste des réponses
+     **********************************/
     public void updateResponses(List<Response> newData) {
         // Affichage en console des réponses
         for (Response response : newData) {
@@ -176,4 +177,14 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         responsesDataset.addAll(newData);
         notifyDataSetChanged();
     }
+
+    /**************************
+     * Récup nombre de réponses
+    **************************/
+    @Override
+    public int getItemCount() {
+        return responsesDataset.size();
+    }
+
+
 }

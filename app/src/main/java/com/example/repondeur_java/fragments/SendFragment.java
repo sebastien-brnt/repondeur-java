@@ -36,6 +36,9 @@ public class SendFragment extends Fragment {
         // Constructeur public vide requis
     }
 
+    /**************************
+     * Création de la vue
+    **************************/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

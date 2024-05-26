@@ -21,7 +21,7 @@ public class ResponsesManager {
      * Gestion des réponses dans les SharedPreferences
      **************************************************/
     // Sauvegarder la liste des réponses
-    public static void saveResponses(Context context, ArrayList<Response> responseList) {
+    public static void setResponses(Context context, ArrayList<Response> responseList) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         Gson gson = new Gson();
@@ -32,6 +32,7 @@ public class ResponsesManager {
 
     // Restaurer la liste des réponses
     public static ArrayList<Response> getResponses(Context context) {
+        // Récupération des réponses depuis les SharedPreferences
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString(RESPONSES_KEY, null);
@@ -41,6 +42,7 @@ public class ResponsesManager {
             return new ArrayList<>();
         }
 
+        // Convertion du JSON en liste de réponses
         Type type = new TypeToken<ArrayList<Response>>() {}.getType();
         ArrayList<Response> responseList = gson.fromJson(json, type);
 

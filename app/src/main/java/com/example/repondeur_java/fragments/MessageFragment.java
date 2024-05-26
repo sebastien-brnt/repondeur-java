@@ -1,7 +1,5 @@
 package com.example.repondeur_java.fragments;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -35,6 +33,9 @@ public class MessageFragment extends Fragment {
         // Constructeur public vide requis
     }
 
+    /**************************
+     * Création de la vue
+    **************************/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,54 +64,48 @@ public class MessageFragment extends Fragment {
             }
         });
 
-        addResponseFromPhoneMemory();
+        this.loadResponses();
 
         return view;
     }
 
-
+    /***********************************
+     * Gestion réponse personnalisée
+     ***********************************/
     // Ajout de la réponse personnalisée
     private void addCustomResponse() {
         String customResponse = inputResponse.getText().toString().trim();
 
         if (!TextUtils.isEmpty(customResponse)) {
-            saveResponse(customResponse);
+            // Ajout de la réponse à la liste des réponses
+            responsesList.add(new Response(customResponse, false, false));
+            ((MainActivity) requireActivity()).setResponsesList(responsesList);
+
+            // Sauvegarder la liste des réponses dans SharedPreferences
+            ResponsesManager.setResponses(requireContext(), responsesList);
+
+            // Mise à jour de l'adaptateur avec la nouvelle réponse
+            this.loadResponses();
+
             inputResponse.setText("");
         } else {
             Toast.makeText(requireContext(), "Veuillez entrer une réponse", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Sauvegarde de la réponse
-    private void saveResponse(String response) {
-        // Ajout de la réponse à la liste des réponses
-        responsesList.add(new Response(response, false, false));
-        ((MainActivity) requireActivity()).setResponsesList(responsesList);
-
-        // Sauvegarder la liste des réponses dans SharedPreferences
-        ResponsesManager.saveResponses(requireContext(), responsesList);
-
-        // Mise à jour de l'adaptateur avec la nouvelle réponse
-        this.loadResponses();
-    }
-
+    /****************************************************************
+     * Gestion des réponses sauvegardées dans les SharedPreferences
+    ****************************************************************/
     private ArrayList<Response> getSavedResponses() {
         return ResponsesManager.getResponses(requireContext());
     }
 
-    private void addResponseFromPhoneMemory() {
-        // Mise à jour des réponses depuis la mémoire du téléphone
-        loadResponses();
-    }
-
-    private void clearSavedResponses() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("UserResponses", Context.MODE_PRIVATE);
-        sharedPreferences.edit().clear().apply();
-    }
-
+    /***********************************
+     * Gestion du chargemet des réponses
+    ***********************************/
     private void loadResponses() {
         // Récupération de la liste des réponses
-        responsesList = ResponsesManager.getResponses(requireContext());
+        responsesList = getSavedResponses();
 
         // Si la liste des responses n'a pas été chargée, on la charge
         if (responsesList == null || responsesList.size() == 0) {
@@ -127,7 +122,7 @@ public class MessageFragment extends Fragment {
             // Mise à jour de la liste des réponses
             ((MainActivity) requireActivity()).setResponsesList(responses);
             responsesList = ((MainActivity) requireActivity()).getResponsesList();
-            ResponsesManager.saveResponses(requireContext(), responsesList);
+            ResponsesManager.setResponses(requireContext(), responsesList);
 
             adapter.updateResponses(responsesList);
         } else {

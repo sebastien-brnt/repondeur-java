@@ -1,6 +1,5 @@
 package com.example.repondeur_java.recyclerAdapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,9 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         this.selectedContacts = selectedContacts;
     }
 
+    /**************************
+     * Gestion ViewHolder
+    **************************/
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nomTextView;
         private final TextView numTelTextView;
@@ -91,14 +93,23 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return contactsDataset.size();
-    }
-
+    /*********************************
+     * Mise à jour liste des contacts
+    *********************************/
+    // Méthode pour mettre à jour la liste des contacts
     public void updateContacts(List<Contact> newData) {
         contactsDataset.clear();
         contactsDataset.addAll(newData);
         notifyDataSetChanged();
     }
+
+    /**************************
+     * Récup nombre de contacts
+    **************************/
+    @Override
+    public int getItemCount() {
+        return contactsDataset.size();
+    }
+
+
 }
