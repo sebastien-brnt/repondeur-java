@@ -1,4 +1,4 @@
-package com.example.repondeur_java;
+package com.example.repondeur_java.elements;
 
 import android.os.Parcel;
 import android.os.Parcelable;

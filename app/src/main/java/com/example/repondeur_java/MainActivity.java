@@ -6,9 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.repondeur_java.databinding.ActivityMainBinding;
+import com.example.repondeur_java.elements.Contact;
+import com.example.repondeur_java.elements.Response;
 import com.example.repondeur_java.fragments.ContactsFragment;
 import com.example.repondeur_java.fragments.MessageFragment;
 import com.example.repondeur_java.fragments.SendFragment;

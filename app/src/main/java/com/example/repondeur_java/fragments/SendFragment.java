@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.repondeur_java.Contact;
+import com.example.repondeur_java.elements.Contact;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
-import com.example.repondeur_java.Response;
+import com.example.repondeur_java.elements.Response;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

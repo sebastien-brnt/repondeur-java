@@ -9,7 +9,7 @@ import android.telephony.SmsMessage;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import com.example.repondeur_java.Contact;
+import com.example.repondeur_java.elements.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
