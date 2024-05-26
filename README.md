@@ -1,7 +1,7 @@
 # Projet Répondeur en Java
 
 ## Description
-Ce projet est application mobile conçue pour rechercher des musiques en fonction de l'artiste ou du titre du morceau. Les utilisateurs peuvent également créer des playlists personnalisées et noter les musique. L'application offre la possibilité de consulter une liste des morceaux notés. Pour effectuer les recherches de musique, l'application s'appuie sur l'API iTunes Search fournis par Apple.
+Ce projet est application mobile Android conçue pour envoyer des spams et/ou  activer une réponse automatique à des contacts enregistrés dans le téléphone de l'utilisateur.
 
 ## Fonctionnalités
 - Vue de l'ensemble des contacts du téléphone
