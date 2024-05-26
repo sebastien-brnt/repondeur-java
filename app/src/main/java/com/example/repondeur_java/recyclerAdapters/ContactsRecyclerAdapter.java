@@ -1,4 +1,4 @@
-package com.example.repondeur_java;
+package com.example.repondeur_java.recyclerAdapters;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.repondeur_java.Contact;
+import com.example.repondeur_java.R;
 
 import java.util.List;
 

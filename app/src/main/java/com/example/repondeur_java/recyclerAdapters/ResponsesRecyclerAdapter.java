@@ -1,4 +1,4 @@
-package com.example.repondeur_java;
+package com.example.repondeur_java.recyclerAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.repondeur_java.R;
+import com.example.repondeur_java.Response;
 import com.example.repondeur_java.utils.UtilsMessage;
 
 import java.util.ArrayList;

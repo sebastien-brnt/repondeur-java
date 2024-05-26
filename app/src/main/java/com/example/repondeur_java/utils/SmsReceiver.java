@@ -36,6 +36,7 @@ public class SmsReceiver extends BroadcastReceiver {
             Log.d(TAG, "Message received");
             Log.d(TAG, "Selected contacts: " + selectedContacts);
 
+            // Récupération des informations du message reçu
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
@@ -43,7 +44,6 @@ public class SmsReceiver extends BroadcastReceiver {
                 for (int i = 0; i < pdus.length; i++) {
                     messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i], bundle.getString("format"));
                     String sender = messages[i].getOriginatingAddress();
-                    String messageBody = messages[i].getMessageBody();
 
                     Log.d(TAG, "Message from: " + sender);
 
@@ -60,26 +60,27 @@ public class SmsReceiver extends BroadcastReceiver {
 
     private void retrieveSelectedContacts(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString("automaticContact", null);
+
+        String json = sharedPreferences.getString("automaticContacts", null);
+        Log.d("RetrieveContacts", "JSON récupéré: " + json);
+
         if (json != null) {
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<Contact>>() {}.getType();
             selectedContacts = gson.fromJson(json, type);
-            Log.d(TAG, "Selected contacts retrieved: " + selectedContacts);
+            Log.d("RetrieveContacts", "Contacts récupérés: " + selectedContacts);
         } else {
-            Log.d(TAG, "No selected contacts found in SharedPreferences.");
+            Log.d("RetrieveContacts", "Aucun contact trouvé dans SharedPreferences.");
             selectedContacts = new ArrayList<>();
         }
     }
 
+
+
     private void retrieveAutoResponseMessage(Context context) {
+        // Récupération de la réponse automatique enregistrée dans SharedPreferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
         autoResponseMessage = sharedPreferences.getString("autoResponseMessage", null);
-        if (autoResponseMessage != null) {
-            Log.d(TAG, "Auto response message retrieved: " + autoResponseMessage);
-        } else {
-            Log.d(TAG, "No auto response message found in SharedPreferences.");
-        }
     }
 
     private boolean isContactSelected(Context context, String sender) {

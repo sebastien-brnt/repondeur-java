@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -23,7 +22,6 @@ import com.example.repondeur_java.Contact;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.Response;
-import com.example.repondeur_java.utils.SmsReceiver;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class SendFragment extends Fragment {
     private ArrayList<Contact> selectedContacts;
 
     public SendFragment() {
-        // Required empty public constructor
+        // Constructeur public vide requis
     }
 
     @Override
@@ -53,60 +51,97 @@ public class SendFragment extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         contactsSpinner.setAdapter(spinnerAdapter);
 
-        // Récupère les contacts sélectionnés
+        // Récupère les contacts sélectionnés dans la section "Contacts"
         selectedContacts = ((com.example.repondeur_java.MainActivity) getActivity()).getSelectedContacts();
+
         if (selectedContacts != null && !selectedContacts.isEmpty()) {
-            updateSelectedContacts(selectedContacts);
+            // Met à jour les contacts sélectionnés dans le spinner
+            updateSpinnerItems(selectedContacts);
         } else {
-            // Item par défaut
+            // Item par défaut si aucun contact n'est sélectionné
             spinnerAdapter.add("Aucun contact sélectionné");
         }
 
-        // Configure les boutons
+        // Récupération des boutons du fragment
         Button sendSpamButton = view.findViewById(R.id.send_spam);
         Button automaticResponseButton = view.findViewById(R.id.send_automatic_response);
 
-        // Gestion du clic sur le bouton "Envoyer spam"
+        // Gestion du clic sur le bouton "Envoyer le message Spam"
         sendSpamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Vérification si il y a des contacts sélectionnés depuis la section "Contacts"
                 if (selectedContacts == null || selectedContacts.isEmpty()) {
+                    // Si aucun contact n'est sélectionné
                     Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
+
                 } else {
                     if (checkSMSPermissions()) {
                         // Récupération de la réponse cochée comme spam
                         Response spamResponse = ((MainActivity) getActivity()).getSpamResponse();
+
+                        // Vérification si une réponse cochée comme spam est trouvée
                         if (spamResponse != null) {
-                            String phoneNumber = selectedContacts.get(0).getPhoneNumber(); // Ex: envoie au premier contact sélectionné
-                            String message = spamResponse.getText();
-                            // Envoi du message 4 fois
-                            for (int i = 0; i < 4; i++) {
-                                sendSMS(phoneNumber, message);
+
+                            // Vérification si un contact est sélectionné et non l'item de sélection par défaut
+                            if ( contactsSpinner.getSelectedItemPosition() != 0) {
+
+                                // Récupération du numéro de téléphone du contact sélectionné
+                                String phoneNumber = selectedContacts.get(contactsSpinner.getSelectedItemPosition() - 1).getPhoneNumber();
+
+                                // Récupération du message de la réponse cochée comme spam
+                                String message = spamResponse.getText();
+
+                                // Vérification du numéro de téléphone
+                                if (phoneNumber == null || phoneNumber.isEmpty()) {
+                                    Toast.makeText(getContext(), "Numéro de téléphone invalide", Toast.LENGTH_SHORT).show();
+
+                                } else {
+                                    // Envoi du message 4 fois
+                                    for (int i = 0; i < 4; i++) {
+                                        sendSMS(phoneNumber, message);
+                                    }
+                                }
+
+                            } else {
+                                // Si le contact n'est pas de type Contact
+                                Toast.makeText(getContext(), "Sélection invalide", Toast.LENGTH_SHORT).show();
                             }
                         } else {
+                            // Si aucune réponse cochée comme spam n'est trouvée
                             Toast.makeText(getContext(), "Aucune réponse marquée comme spam trouvée", Toast.LENGTH_SHORT).show();
                         }
                     } else {
+                        // Si les permissions ne sont pas accordées, on les demandes
                         requestSMSPermissions();
                     }
                 }
             }
         });
 
+
         // Gestion du clic sur le bouton "Activation réponse automatique"
         automaticResponseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Vérification si il y a des contacts sélectionnés depuis la section "Contacts"
                 if (selectedContacts == null || selectedContacts.isEmpty()) {
                     Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
-                } else {
-                    Response autoResponse = ((MainActivity) getActivity()).getAutoResponse();
-                    if (autoResponse != null) {
-                        // Enregistrer les contacts sélectionnés et le message de réponse automatique dans les SharedPreferences
-                        saveAutomaticContact(selectedContacts);
-                        saveAutoResponseMessage(autoResponse.getText());
 
+                } else {
+                    // Récupération de la réponse automatique
+                    Response autoResponse = ((MainActivity) getActivity()).getAutoResponse();
+
+                    // Vérification si une réponse automatique est trouvée
+                    if (autoResponse != null) {
+
+                        // Enregistrer les contacts sélectionnés dans la section "Contacts" et le message de réponse automatique dans les SharedPreferences
+                        saveAutomaticContacts(selectedContacts);
+                        saveAutoResponseMessage(autoResponse.getText());
                         Toast.makeText(getContext(), "Réponse automatique activée pour le contact sélectionné.", Toast.LENGTH_SHORT).show();
+
                     } else {
                         Toast.makeText(getContext(), "Aucune réponse automatique trouvée", Toast.LENGTH_SHORT).show();
                     }
@@ -117,30 +152,32 @@ public class SendFragment extends Fragment {
         return view;
     }
 
-    // Méthode pour envoyer un SMS
-    public void sendSMS(String phoneNumber, String message) {
-        try {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-            Toast.makeText(getContext(), "SMS envoyé.", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Échec de l'envoi du SMS.", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-    }
 
+    /**************************
+     * Spinner
+    **************************/
     // Méthode pour mettre à jour les contacts sélectionnés dans le spinner
-    public void updateSelectedContacts(ArrayList<Contact> selectedContacts) {
+    public void updateSpinnerItems(ArrayList<Contact> selectedContacts) {
         ArrayList<String> contactNames = new ArrayList<>();
+
+        // Ajout d'un item par défaut
+        contactNames.add("-- Sélectionnez un contact --");
+
+        // Affichage pour chaque contact de son nom
         for (Contact contact : selectedContacts) {
             contactNames.add(contact.getName());
         }
 
+        // Mise à jour de l'adaptateur du spinner
         spinnerAdapter.clear();
         spinnerAdapter.addAll(contactNames);
         spinnerAdapter.notifyDataSetChanged();
     }
 
+
+    /**************************
+     * Permissions
+    **************************/
     // Méthode pour vérifier les permissions d'envoyer et de recevoir des SMS
     private boolean checkSMSPermissions() {
         boolean sendSMSPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
@@ -177,18 +214,40 @@ public class SendFragment extends Fragment {
         }
     }
 
-    // Méthode pour enregistrer les contacts sélectionnés
-    private void saveAutomaticContact(ArrayList<Contact> selectedContacts) {
+
+    /**************************
+     * Envoi SPAM
+    **************************/
+    // Méthode pour envoyer un SMS
+    public void sendSMS(String phoneNumber, String message) {
+        try {
+            // Envoi du SMS
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+            Toast.makeText(getContext(), "SMS envoyé.", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Échec de l'envoi du SMS.", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+
+    /**************************
+     * Réponse automatique
+    **************************/
+    // Méthode pour enregistrer les contacts sélectionnés dans les SharedPreferences
+    private void saveAutomaticContacts(ArrayList<Contact> selectedContacts) {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
-        sharedPreferences.edit().clear().apply();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(selectedContacts);
-        editor.putString("automaticContact", json);
+        editor.putString("automaticContacts", json);
         editor.apply();
     }
 
-    // Méthode pour enregistrer le message de réponse automatique
+
+
+    // Méthode pour enregistrer le message de réponse automatique dans les SharedPreferences
     private void saveAutoResponseMessage(String message) {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();

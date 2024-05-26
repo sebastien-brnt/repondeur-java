@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.Response;
-import com.example.repondeur_java.ResponsesRecyclerAdapter;
+import com.example.repondeur_java.recyclerAdapters.ResponsesRecyclerAdapter;
 import com.example.repondeur_java.utils.UtilsMessage;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class MessageFragment extends Fragment {
     private ResponsesRecyclerAdapter adapter;
 
     public MessageFragment() {
-        // Required empty public constructor
+        // Constructeur public vide requis
     }
 
     @Override

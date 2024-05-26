@@ -20,28 +20,44 @@
             android:textSize="20dip"
             />
 
-        <!-- Liste déroulantes des contacts sélectionnés -->
+        <!-- textView explicatif -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='Choisissez un contact parmis ceux sélectionnés dans la section "Contacts" pour envoyer un message Spam.'
+            android:layout_marginTop="30dp"
+            />
+
+        <!-- Liste déroulantes des contacts sélectionnés en tab 1 -->
         <Spinner
             android:id="@+id/contacts_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="40dp" />
 
-        <!-- Bouton d'envoi de message Spam -->
+        <!-- Bouton d'envoi de message Spam au conatct sélectionné -->
         <Button
             android:id="@+id/send_spam"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Envoyer le message Spam"
+            android:text="Envoyer le message Spam (4 fois)"
             android:layout_marginTop="30dp" />
 
-        <!-- Bouton d'activation de la réponse automatique -->
+        <!-- textView explicatif -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="L'activation de la réponse automatique enverra le message sélectionné comme réponse automatique à chaque contact sélectionné dans la sections Contacts qui vous enverra un message."
+            android:layout_marginTop="40dp"
+            />
+
+        <!-- Bouton d'activation de la réponse automatique pour les contacts de la tab 1 -->
         <Button
             android:id="@+id/send_automatic_response"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Activation réponse automatique"
-            android:layout_marginTop="10dp" />
+            android:text="Activer réponse automatique"
+            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 

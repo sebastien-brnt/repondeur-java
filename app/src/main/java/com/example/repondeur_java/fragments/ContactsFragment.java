@@ -13,13 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.repondeur_java.Contact;
-import com.example.repondeur_java.ContactsRecyclerAdapter;
+import com.example.repondeur_java.recyclerAdapters.ContactsRecyclerAdapter;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 
@@ -33,7 +32,7 @@ public class ContactsFragment extends Fragment {
     private ContactsRecyclerAdapter adapter;
 
     public ContactsFragment() {
-        // Required empty public constructor
+        // Constructeur public vide requis
     }
 
     @Override
