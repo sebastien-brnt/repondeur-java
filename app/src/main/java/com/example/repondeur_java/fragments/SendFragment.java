@@ -139,8 +139,9 @@ public class SendFragment extends Fragment {
                     // Vérification si une réponse automatique est trouvée
                     if (autoResponse != null) {
 
-                        // Enregistrer les contacts sélectionnés dans la section "Contacts" dans les SharedPreferences
+                        // Enregistrer les contacts sélectionnés dans la section "Contacts" et la réponse automatique définie dans les SharedPreferences
                         saveAutomaticContacts(selectedContacts);
+                        saveAutoResponseMessage(autoResponse.getText());
                         Toast.makeText(getContext(), "Réponse automatique activée pour les contacts sélectionnés.", Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -243,6 +244,15 @@ public class SendFragment extends Fragment {
         Gson gson = new Gson();
         String json = gson.toJson(selectedContacts);
         editor.putString("automaticContacts", json);
+        editor.apply();
+    }
+
+    // Méthode pour enregistrer le message de réponse automatique dans les SharedPreferences
+    private void saveAutoResponseMessage(String message) {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("automaticResponseMessage", message);
         editor.apply();
     }
 }

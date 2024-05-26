@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
-import com.example.repondeur_java.elements.Response;
+import com.example.repondeur_java.entities.Response;
 import com.example.repondeur_java.recyclerAdapters.ResponsesRecyclerAdapter;
 import com.example.repondeur_java.utils.ResponsesManager;
 

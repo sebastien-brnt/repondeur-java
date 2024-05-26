@@ -10,7 +10,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.example.repondeur_java.MainActivity;
-import com.example.repondeur_java.elements.Contact;
+import com.example.repondeur_java.entities.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -85,8 +85,9 @@ public class SmsReceiver extends BroadcastReceiver {
 
     // Méthode pour récupérer le message de réponse automatique
     private void retrieveAutoResponseMessage(Context context) {
-        // Récupération de la réponse automatique en cours (Sélectionnée dans la section "Message")
-        autoResponseMessage = ((MainActivity) context).getAutoResponse().getText();
+        // Récupération de la réponse automatique enregistrée dans SharedPreferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
+        autoResponseMessage = sharedPreferences.getString("automaticResponseMessage", null);
     }
 
     /**************************
