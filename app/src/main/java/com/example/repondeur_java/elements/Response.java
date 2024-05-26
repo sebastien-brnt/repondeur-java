@@ -13,6 +13,9 @@ public class Response {
         this.isAutomaticResponse = isAutomaticResponse;
     }
 
+    /*****************************
+     * Getters et Setters
+    *****************************/
     public String getText() {
         return text;
     }

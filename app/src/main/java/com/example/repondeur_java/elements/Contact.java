@@ -15,7 +15,9 @@ public class Contact implements Parcelable {
         this.isSelected = false;
     }
 
-    // Getters et Setters
+    /*****************************
+     * Getters et Setters
+    *****************************/
     public String getName() {
         return name;
     }
@@ -47,6 +49,9 @@ public class Contact implements Parcelable {
         isSelected = in.readByte() != 0; // conversion du byte en boolean
     }
 
+    /*******************************
+     * Implémentation de Parcelable
+    *******************************/
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {
         @Override
         public Contact createFromParcel(Parcel in) {

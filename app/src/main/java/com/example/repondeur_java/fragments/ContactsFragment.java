@@ -35,6 +35,9 @@ public class ContactsFragment extends Fragment {
         // Constructeur public vide requis
     }
 
+    /*****************************
+     * Création de la vue
+    *****************************/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,6 +63,9 @@ public class ContactsFragment extends Fragment {
         return view;
     }
 
+    /*****************************
+     * Gestion des permissions
+    *****************************/
     public boolean isPermissionsGranted() {
         // Retourne vrai si l'utilisateur a donné sa permission pour lire les contacts
         return ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
@@ -75,6 +81,9 @@ public class ContactsFragment extends Fragment {
         ActivityCompat.requestPermissions(requireActivity(), permissions, 0);
     }
 
+    /*****************************
+     * Gestion chargement contacts
+    *****************************/
     private void loadContacts() {
         // Si la liste des contacts n'a pas été chargée, on la récupère
         if (contactsList.size() == 0) {
@@ -109,13 +118,6 @@ public class ContactsFragment extends Fragment {
         } else {
             // Mise à jour de l'adapter avec la liste des contacts déjà chargés
             adapter.updateContacts(contactsList);
-        }
-    }
-
-    public void updateSelectedContacts(ArrayList<Contact> selectedContacts) {
-        this.selectedContacts = selectedContacts;
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
         }
     }
 }
