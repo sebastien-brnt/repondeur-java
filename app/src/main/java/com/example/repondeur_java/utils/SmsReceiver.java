@@ -70,7 +70,6 @@ public class SmsReceiver extends BroadcastReceiver {
         // Récupération des contacts sélectionnés enregistrés dans SharedPreferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
         String json = sharedPreferences.getString("automaticContacts", null);
-        Log.d("RetrieveContacts", "JSON récupéré: " + json);
 
         if (json != null) {
             Gson gson = new Gson();

@@ -49,7 +49,7 @@ public class ContactsFragment extends Fragment {
 
         selectedContacts = ((MainActivity) requireActivity()).getSelectedContacts();
         contactsList = ((MainActivity) requireActivity()).getContactsList();
-        adapter = new ContactsRecyclerAdapter(dataset, selectedContacts);
+        adapter = new ContactsRecyclerAdapter(dataset, selectedContacts, true);
         recyclerView.setAdapter(adapter);
 
         // Si les permissions ne sont pas accordées, on les demande, sinon on charge les contacts

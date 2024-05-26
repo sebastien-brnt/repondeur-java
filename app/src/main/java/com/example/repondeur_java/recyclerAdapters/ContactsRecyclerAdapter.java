@@ -16,10 +16,12 @@ import java.util.List;
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ViewHolder> {
     private final List<Contact> contactsDataset;
     private final List<Contact> selectedContacts;
+    private boolean showCheckBox;
 
-    public ContactsRecyclerAdapter(List<Contact> dataset, List<Contact> selectedContacts) {
+    public ContactsRecyclerAdapter(List<Contact> dataset, List<Contact> selectedContacts, boolean showCheckBox) {
         this.contactsDataset = dataset;
         this.selectedContacts = selectedContacts;
+        this.showCheckBox = showCheckBox;
     }
 
     /**************************
@@ -54,6 +56,13 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.contacts_recycler, viewGroup, false);
+
+        // Si l'option showCheckBox est désactivée, on cache la case à cocher
+        if (!showCheckBox) {
+            CheckBox checkBox = view.findViewById(R.id.contact_checkbox);
+            checkBox.setVisibility(View.GONE);
+        }
+
         return new ViewHolder(view);
     }
 

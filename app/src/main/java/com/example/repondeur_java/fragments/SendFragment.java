@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -16,14 +18,18 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.repondeur_java.entities.Contact;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.entities.Response;
+import com.example.repondeur_java.recyclerAdapters.ContactsRecyclerAdapter;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class SendFragment extends Fragment {
@@ -32,6 +38,10 @@ public class SendFragment extends Fragment {
     private Spinner contactsSpinner;
     private ArrayAdapter<String> spinnerAdapter;
     private ArrayList<Contact> selectedContacts;
+    private ArrayList<Contact> recipients;
+    private ContactsRecyclerAdapter adapter;
+    private ArrayList<Contact> dataset = new ArrayList<>();
+
 
     public SendFragment() {
         // Constructeur public vide requis
@@ -45,6 +55,10 @@ public class SendFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_send, container, false);
+
+        // Récupération des boutons du fragment
+        Button sendSpamButton = view.findViewById(R.id.send_spam);
+        Button automaticResponseButton = view.findViewById(R.id.send_automatic_response);
 
         // Initialise le spinner
         contactsSpinner = view.findViewById(R.id.contacts_spinner);
@@ -65,9 +79,27 @@ public class SendFragment extends Fragment {
             spinnerAdapter.add("Aucun contact sélectionné");
         }
 
-        // Récupération des boutons du fragment
-        Button sendSpamButton = view.findViewById(R.id.send_spam);
-        Button automaticResponseButton = view.findViewById(R.id.send_automatic_response);
+        // Récupération du titre de la liste des contacts
+        TextView contactsTitle = view.findViewById(R.id.contacts_list_title);
+
+        // Création du RecyclerView pour la liste des contacts qui reçoivent actuellement la réponse automatique
+        RecyclerView recyclerView = view.findViewById(R.id.contacts_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Récupération des contacts dans le SharedPreferences
+        recipients = getAutomaticResponseRecipients();
+
+        if (recipients != null && !recipients.isEmpty()) {
+            // Met à jour le titre de la liste des contacts
+            contactsTitle.setText("Liste des contacts qui reçoivent actuellement la réponse automatique :");
+            automaticResponseButton.setText("Désactiver la réponse automatique");
+
+            // Met à jour la liste des contacts
+            dataset.addAll(recipients);
+        }
+
+        adapter = new ContactsRecyclerAdapter(dataset, recipients, false);
+        recyclerView.setAdapter(adapter);
 
         // Gestion du clic sur le bouton "Envoyer le message Spam"
         sendSpamButton.setOnClickListener(new View.OnClickListener() {
@@ -129,25 +161,32 @@ public class SendFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                // Vérification si il y a des contacts sélectionnés depuis la section "Contacts"
-                if (selectedContacts == null || selectedContacts.isEmpty()) {
-                    Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    // Récupération de la réponse automatique
-                    Response autoResponse = ((MainActivity) getActivity()).getAutoResponse();
-
-                    // Vérification si une réponse automatique est trouvée
-                    if (autoResponse != null) {
-
-                        // Enregistrer les contacts sélectionnés dans la section "Contacts" et la réponse automatique définie dans les SharedPreferences
-                        saveAutomaticContacts(selectedContacts);
-                        saveAutoResponseMessage(autoResponse.getText());
-                        Toast.makeText(getContext(), "Réponse automatique activée pour les contacts sélectionnés.", Toast.LENGTH_SHORT).show();
+                if ( recipients == null || recipients.isEmpty()) {
+                    // Vérification si il y a des contacts sélectionnés depuis la section "Contacts"
+                    if (selectedContacts == null || selectedContacts.isEmpty()) {
+                        Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        Toast.makeText(getContext(), "Aucune réponse automatique trouvée", Toast.LENGTH_SHORT).show();
+                        // Récupération de la réponse automatique
+                        Response autoResponse = ((MainActivity) getActivity()).getAutoResponse();
+
+                        // Vérification si une réponse automatique est trouvée
+                        if (autoResponse != null) {
+
+                            // Enregistrer les contacts sélectionnés dans la section "Contacts" et la réponse automatique définie dans les SharedPreferences
+                            saveAutomaticContacts(selectedContacts);
+                            saveAutoResponseMessage(autoResponse.getText());
+                            Toast.makeText(getContext(), "Réponse automatique activée pour les contacts sélectionnés.", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(getContext(), "Aucune réponse automatique trouvée", Toast.LENGTH_SHORT).show();
+                        }
                     }
+                } else {
+                    // Suppression des contacts sélectionnés et de la réponse automatique enregistrés dans les SharedPreferences
+                    saveAutomaticContacts(new ArrayList<>());
+                    saveAutoResponseMessage("");
+                    Toast.makeText(getContext(), "Réponse automatique désactivée !.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -257,5 +296,22 @@ public class SendFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("automaticResponseMessage", message);
         editor.apply();
+    }
+
+    /****************************************
+    * Récupération des contacts automatiques
+    ****************************************/
+    private ArrayList<Contact> getAutomaticResponseRecipients() {
+        // Récupération des contacts sélectionnés enregistrés dans SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString("automaticContacts", null);
+
+        if (json != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Contact>>() {}.getType();
+            return gson.fromJson(json, type);
+        } else {
+            return new ArrayList<Contact>();
+        }
     }
 }
