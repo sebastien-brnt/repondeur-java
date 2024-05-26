@@ -11,11 +11,15 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
-public class UtilsMessage {
+public class ResponsesManager {
 
     private static final String PREFS_NAME = "responses_prefs";
     private static final String RESPONSES_KEY = "responses_key";
 
+
+    /**************************************************
+     * Gestion des réponses dans les SharedPreferences
+     **************************************************/
     // Sauvegarder la liste des réponses
     public static void saveResponses(Context context, ArrayList<Response> responseList) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -33,14 +37,16 @@ public class UtilsMessage {
         String json = prefs.getString(RESPONSES_KEY, null);
 
         if (json == null) {
-            return new ArrayList<>();  // Retourne une liste vide si aucune donnée n'est trouvée
+            // Retourne une liste vide si aucune donnée n'est trouvée
+            return new ArrayList<>();
         }
 
         Type type = new TypeToken<ArrayList<Response>>() {}.getType();
         ArrayList<Response> responseList = gson.fromJson(json, type);
 
         if (responseList == null) {
-            responseList = new ArrayList<>();  // Assurez-vous que la liste retournée n'est pas null
+            // Retourne une liste vide si la liste est nulle
+            responseList = new ArrayList<>();
         }
 
         return responseList;

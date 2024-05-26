@@ -9,6 +9,7 @@ import android.telephony.SmsMessage;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.elements.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,6 +27,10 @@ public class SmsReceiver extends BroadcastReceiver {
     private ArrayList<Contact> selectedContacts;
     private String autoResponseMessage;
 
+
+    /**************************
+     * Réception des messages
+    **************************/
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
@@ -47,9 +52,9 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     Log.d(TAG, "Message from: " + sender);
 
-                    if (isContactSelected(context, sender)) {
+                    if (isContactSelected(sender)) {
                         Log.d(TAG, "Sender is a selected contact. Sending auto-response.");
-                        sendAutoResponse(context, sender);
+                        sendAutoResponse(sender);
                     } else {
                         Log.d(TAG, "Sender is not a selected contact.");
                     }
@@ -58,6 +63,9 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
+    /**************************
+     * Récupération des données
+    **************************/
     private void retrieveSelectedContacts(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
 
@@ -75,25 +83,33 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
-
-
+    // Méthode pour récupérer le message de réponse automatique
     private void retrieveAutoResponseMessage(Context context) {
-        // Récupération de la réponse automatique enregistrée dans SharedPreferences
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
-        autoResponseMessage = sharedPreferences.getString("autoResponseMessage", null);
+        // Récupération de la réponse automatique en cours (Sélectionnée dans la section "Message")
+        autoResponseMessage = ((MainActivity) context).getAutoResponse().getText();
     }
 
-    private boolean isContactSelected(Context context, String sender) {
+    /**************************
+     * Vérifications
+    **************************/
+    // Méthode pour vérifier si le contact qui a envoyé le message est sélectionné
+    private boolean isContactSelected(String sender) {
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
         try {
+            // Normalisation du numéro de téléphone du message reçu
             Phonenumber.PhoneNumber senderNumber = phoneUtil.parse(sender, Locale.getDefault().getCountry());
             String normalizedSender = phoneUtil.format(senderNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
 
+            // Vérification si le contact est dans la liste des contacts sélectionnés
             if (selectedContacts != null) {
                 for (Contact contact : selectedContacts) {
+
+                    // Normalisation du numéro de téléphone du contact
                     Phonenumber.PhoneNumber contactNumber = phoneUtil.parse(contact.getPhoneNumber(), Locale.getDefault().getCountry());
                     String normalizedContact = phoneUtil.format(contactNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
 
+                    // SI les numéros de téléphone sont identiques, on retourne true
                     if (normalizedContact.equals(normalizedSender)) {
                         return true;
                     }
@@ -106,13 +122,17 @@ public class SmsReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private void sendAutoResponse(Context context, String phoneNumber) {
+    /**************************
+     * Envoi de la réponse
+    **************************/
+    // Méthode pour envoyer une réponse automatique
+    private void sendAutoResponse(String phoneNumber) {
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, autoResponseMessage, null, null);
-            Log.d(TAG, "Auto response sent to: " + phoneNumber);
+            Log.d(TAG, "Réponse automatique envoyée à : " + phoneNumber);
         } catch (Exception e) {
-            Log.e(TAG, "Failed to send auto response.", e);
+            Log.e(TAG, "Erreur lors de l'envoi de la réponse automatique.", e);
         }
     }
 }

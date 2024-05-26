@@ -13,7 +13,7 @@ import com.example.repondeur_java.elements.Response;
 import com.example.repondeur_java.fragments.ContactsFragment;
 import com.example.repondeur_java.fragments.MessageFragment;
 import com.example.repondeur_java.fragments.SendFragment;
-import com.example.repondeur_java.utils.UtilsMessage;
+import com.example.repondeur_java.utils.ResponsesManager;
 
 import java.util.ArrayList;
 
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     **************************/
     public Response getSpamResponse() {
         // Récupération des réponses
-        ArrayList<Response> responses = UtilsMessage.getResponses(this);
+        ArrayList<Response> responses = ResponsesManager.getResponses(this);
 
         // Recherche de la réponse cochée comme spam
         for (Response response : responses) {
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     public Response getAutoResponse() {
         // Récupération des réponses
-        ArrayList<Response> responses = UtilsMessage.getResponses(this);
+        ArrayList<Response> responses = ResponsesManager.getResponses(this);
 
         // Recherche de la réponse cochée comme réponse automatique
         for (Response response : responses) {

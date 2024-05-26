@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.elements.Response;
-import com.example.repondeur_java.utils.UtilsMessage;
+import com.example.repondeur_java.utils.ResponsesManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +107,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                 }
 
                 // Sauvegarder les réponses après la modification
-                UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
+                ResponsesManager.saveResponses(context, new ArrayList<>(responsesDataset));
             }
         });
 
@@ -146,7 +146,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                 }
 
                 // Sauvegarder les réponses après la modification
-                UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
+                ResponsesManager.saveResponses(context, new ArrayList<>(responsesDataset));
             }
         });
 
@@ -156,7 +156,7 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
             @Override
             public void onClick(View v) {
                 responsesDataset.remove(response);
-                UtilsMessage.saveResponses(context, new ArrayList<>(responsesDataset));
+                ResponsesManager.saveResponses(context, new ArrayList<>(responsesDataset));
                 notifyDataSetChanged();
             }
         });
