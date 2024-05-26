@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.repondeur_java.elements.Contact;
+import com.example.repondeur_java.entities.Contact;
 import com.example.repondeur_java.recyclerAdapters.ContactsRecyclerAdapter;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;

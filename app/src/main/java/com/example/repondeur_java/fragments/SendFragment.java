@@ -17,10 +17,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.repondeur_java.elements.Contact;
+import com.example.repondeur_java.entities.Contact;
 import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
-import com.example.repondeur_java.elements.Response;
+import com.example.repondeur_java.entities.Response;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

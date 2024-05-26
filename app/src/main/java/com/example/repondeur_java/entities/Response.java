@@ -1,6 +1,4 @@
-package com.example.repondeur_java.elements;
-
-import android.util.Log;
+package com.example.repondeur_java.entities;
 
 public class Response {
     private String text;

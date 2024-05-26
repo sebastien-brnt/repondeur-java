@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.repondeur_java.R;
-import com.example.repondeur_java.elements.Response;
+import com.example.repondeur_java.entities.Response;
 import com.example.repondeur_java.utils.ResponsesManager;
 
 import java.util.ArrayList;

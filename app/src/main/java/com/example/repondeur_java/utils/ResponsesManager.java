@@ -3,7 +3,7 @@ package com.example.repondeur_java.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.repondeur_java.elements.Response;
+import com.example.repondeur_java.entities.Response;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

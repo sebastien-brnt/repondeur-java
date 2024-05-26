@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.repondeur_java.elements.Contact;
+import com.example.repondeur_java.entities.Contact;
 import com.example.repondeur_java.R;
 
 import java.util.List;
