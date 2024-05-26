@@ -21,8 +21,6 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     public ContactsRecyclerAdapter(List<Contact> dataset, List<Contact> selectedContacts) {
         this.contactsDataset = dataset;
         this.selectedContacts = selectedContacts;
-        Log.d("ContactsRecyclerAdapter", "ContactsRecyclerAdapter: " + selectedContacts.size() + " contacts");
-        Log.d("ContactsRecyclerAdapter", "ContactsRecyclerAdapter: " + selectedContacts.toString() + " contacts");
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

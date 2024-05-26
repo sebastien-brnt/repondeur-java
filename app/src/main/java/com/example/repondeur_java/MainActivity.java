@@ -18,9 +18,10 @@ import com.example.repondeur_java.utils.UtilsMessage;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<Contact> selectedContacts = new ArrayList<>();
+
     private ArrayList<Contact> contactsList = new ArrayList<>();
     private ArrayList<Response> responsesList = new ArrayList<>();
+    private ArrayList<Contact> selectedContacts = new ArrayList<>();
     private ActivityMainBinding binding;
 
     @Override
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**************************
+     * Gestion des fragments
+    **************************/
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    /**************************
+     * Contacts sélectionnés
+    **************************/
     public ArrayList<Contact> getSelectedContacts() {
         return selectedContacts;
     }
@@ -64,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         this.selectedContacts = selectedContacts;
     }
 
+    /**************************
+     * Contact liste
+    **************************/
     public ArrayList<Contact> getContactsList() {
         return contactsList;
     }
@@ -72,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
         this.contactsList = contacts;
     }
 
+    /**************************
+     * Réponses liste
+    **************************/
     public ArrayList<Response> getResponsesList() {
         return responsesList;
     }
@@ -80,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
         this.responsesList = responses;
     }
 
+
+    /**************************
+     * Réponses sélectionnées
+    **************************/
     public Response getSpamResponse() {
         // Récupération des réponses
         ArrayList<Response> responses = UtilsMessage.getResponses(this);
@@ -97,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // Récupération des réponses
         ArrayList<Response> responses = UtilsMessage.getResponses(this);
 
-        // Recherche de la réponse cochée comme spam
+        // Recherche de la réponse cochée comme réponse automatique
         for (Response response : responses) {
             if (response.isAutomaticResponse()) {
                 return response;
