@@ -9,7 +9,6 @@ import android.telephony.SmsMessage;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.entities.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,45 +26,64 @@ public class SmsReceiver extends BroadcastReceiver {
     private ArrayList<Contact> recipients;
     private String autoResponseMessage;
 
-
     /**************************
-     * Réception des messages
-    **************************/
+     * Réception des Intents
+     **************************/
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
-            // Récupérer les contacts et le message de réponse automatique des SharedPreferences
-            retrieveSelectedContacts(context);
-            retrieveAutoResponseMessage(context);
+            // Logique pour gérer les SMS reçus
+            handleReceivedSms(context, intent);
+        } else if (intent.getAction().equals("com.example.repondeur_java.SEND_SCHEDULED_SMS")) {
+            // Logique pour envoyer les SMS programmés
+            handleScheduledSms(context, intent);
+        }
+    }
 
-            // Récupération des informations du message reçu
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                Object[] pdus = (Object[]) bundle.get("pdus");
-                SmsMessage[] messages = new SmsMessage[pdus.length];
-                for (int i = 0; i < pdus.length; i++) {
-                    messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i], bundle.getString("format"));
-                    String sender = messages[i].getOriginatingAddress();
+    /**************************
+     * Gestion des SMS
+     **************************/
+    private void handleReceivedSms(Context context, Intent intent) {
+        // Récupérer les contacts et le message de réponse automatique des SharedPreferences
+        retrieveSelectedContacts(context);
+        retrieveAutoResponseMessage(context);
 
-                    Log.d(TAG, "Message reçu de : " + sender);
-                    Log.d(TAG, "Envoi du message à : " + recipients);
-                    Log.d(TAG, "Message a envoyer : " + autoResponseMessage);
+        // Récupération des informations du message reçu
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            Object[] pdus = (Object[]) bundle.get("pdus");
+            SmsMessage[] messages = new SmsMessage[pdus.length];
+            for (int i = 0; i < pdus.length; i++) {
+                messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i], bundle.getString("format"));
+                String sender = messages[i].getOriginatingAddress();
 
+                Log.d(TAG, "Message reçu de : " + sender);
+                Log.d(TAG, "Envoi du message à : " + recipients);
+                Log.d(TAG, "Message a envoyer : " + autoResponseMessage);
 
-                    if (isContactSelected(sender)) {
-                        Log.d(TAG, "Le contact est un contact sélectionné. Envoi de la réponse automatique.");
-                        sendAutoResponse(sender);
-                    } else {
-                        Log.d(TAG, "Le contact n'est pas un contact sélectionné.");
-                    }
+                if (isContactSelected(sender)) {
+                    Log.d(TAG, "Le contact est un contact sélectionné. Envoi de la réponse automatique.");
+                    sendAutoResponse(sender);
+                } else {
+                    Log.d(TAG, "Le contact n'est pas un contact sélectionné.");
                 }
             }
         }
     }
 
+    private void handleScheduledSms(Context context, Intent intent) {
+        String phoneNumber = intent.getStringExtra("phoneNumber");
+        String message = intent.getStringExtra("message");
+
+        Log.d(TAG, "Envoi du SMS programmé à : " + phoneNumber);
+        sendSms(phoneNumber, message);
+    }
+
+
     /**************************
      * Récupération des données
     **************************/
+    // Méthode pour récupérer les contacts qui doivent recevoir une réponse automatique
     private void retrieveSelectedContacts(Context context) {
         // Récupération des contacts sélectionnés enregistrés dans SharedPreferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
@@ -123,8 +141,8 @@ public class SmsReceiver extends BroadcastReceiver {
     }
 
     /**************************
-     * Envoi de la réponse
-    **************************/
+     * Envoi de messages
+     **************************/
     // Méthode pour envoyer une réponse automatique
     private void sendAutoResponse(String phoneNumber) {
         try {
@@ -133,6 +151,17 @@ public class SmsReceiver extends BroadcastReceiver {
             Log.d(TAG, "Réponse automatique envoyée à : " + phoneNumber);
         } catch (Exception e) {
             Log.e(TAG, "Erreur lors de l'envoi de la réponse automatique.", e);
+        }
+    }
+
+    // Méthode pour envoyer un SMS
+    private void sendSms(String phoneNumber, String message) {
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+            Log.d(TAG, "SMS envoyé à : " + phoneNumber);
+        } catch (Exception e) {
+            Log.e(TAG, "Erreur lors de l'envoi du SMS.", e);
         }
     }
 }

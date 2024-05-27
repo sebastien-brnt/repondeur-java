@@ -5,76 +5,177 @@
     android:layout_height="match_parent"
     tools:context=".fragments.SendFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp"
-        >
-
-        <!-- textView du titre -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Paramétrage des envois"
-            android:textSize="20dip"
-            />
-
-        <!-- textView explicatif -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='Choisissez un contact parmis ceux sélectionnés dans la section "Contacts" pour envoyer un message Spam.'
-            android:layout_marginTop="30dp"
-            />
-
-        <!-- Liste déroulantes des contacts sélectionnés en tab 1 -->
-        <Spinner
-            android:id="@+id/contacts_spinner"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp"
+            >
 
-        <!-- Bouton d'envoi de message Spam au conatct sélectionné -->
-        <Button
-            android:id="@+id/send_spam"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Envoyer le message Spam (4 fois)"
-            android:layout_marginTop="30dp" />
+            <!-- textView du titre -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paramétrage des envois"
+                android:textSize="20dip"
+                />
 
-        <!-- textView explicatif -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="L'activation de la réponse automatique enverra le message sélectionné comme réponse automatique à chaque contact sélectionné dans la sections Contacts qui vous enverra un message."
-            android:layout_marginTop="40dp"
-            />
+            <!-- Texte planification d'un message -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Envoi du message Spam"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                />
 
-        <!-- Bouton d'activation de la réponse automatique pour les contacts de la tab 1 -->
-        <Button
-            android:id="@+id/send_automatic_response"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Activer réponse automatique"
-            android:layout_marginTop="20dp" />
+            <!-- textView explicatif -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='Choisissez un contact parmis ceux sélectionnés dans la section "Contacts" pour envoyer un message Spam.'
+                android:layout_marginTop="30dp"
+                />
 
-        <!-- textView explicatif -->
-        <TextView
-            android:id="@+id/contacts_list_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginTop="20dp"
-            />
+            <!-- Liste déroulantes des contacts sélectionnés en tab 1 -->
+            <Spinner
+                android:id="@+id/contacts_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp" />
 
-        <!-- recyclerview pour afficher la liste des contacts -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contacts_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            <!-- Bouton d'envoi de message Spam au conatct sélectionné -->
+            <Button
+                android:id="@+id/send_spam"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Envoyer le message Spam (4 fois)"
+                android:layout_marginTop="30dp" />
 
-    </LinearLayout>
+            <!-- Séparation entre l'envoi de spam et les message automatique -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#BEBEBE"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Texte planification d'un message -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activation réponse automatique"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                />
+
+            <!-- textView explicatif -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="L'activation de la réponse automatique enverra le message sélectionné comme réponse automatique à chaque contact sélectionné dans la sections Contacts qui vous enverra un message."
+                android:layout_marginTop="20dp"
+                />
+
+            <!-- Bouton d'activation de la réponse automatique pour les contacts de la tab 1 -->
+            <Button
+                android:id="@+id/send_automatic_response"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Activer réponse automatique"
+                android:layout_marginTop="20dp" />
+
+            <!-- textView explicatif -->
+            <TextView
+                android:id="@+id/contacts_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                />
+
+            <!-- recyclerview pour afficher la liste des contacts -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/contacts_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+
+            <!-- Séparation entre les réponse automatique et la plannification -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#BEBEBE"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Texte planification d'un message -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Planification d'un message"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                />
+
+            <!-- Texte choix contact -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choisissez un contact afin de planifier l'envoi d'un message spécifique."
+                android:layout_marginTop="20dp"
+                />
+
+            <!-- Liste déroulantes des contacts sélectionnés en tab 1 -->
+            <Spinner
+                android:id="@+id/contacts_spinner_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+            <!-- Texte choix date -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choix de l'heure d'envoi :"
+                android:layout_marginTop="40dp"
+                />
+
+            <!-- TimePicker pour choisir l'heure d'envoi -->
+            <TimePicker
+                android:id="@+id/time_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:timePickerMode="spinner" />
+
+
+            <!-- EditText pour le message -->
+            <EditText
+                android:id="@+id/message_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Message à envoyer"
+                android:layout_marginTop="10dp" />
+
+            <!-- Bouton pour plannifier l'envoi du message -->
+            <Button
+                android:id="@+id/send_scheduled_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plannifier l'envoi du message"
+                android:layout_marginTop="20dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>

@@ -1,10 +1,16 @@
 package com.example.repondeur_java.fragments;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.repondeur_java.entities.Contact;
@@ -26,16 +34,22 @@ import com.example.repondeur_java.MainActivity;
 import com.example.repondeur_java.R;
 import com.example.repondeur_java.entities.Response;
 import com.example.repondeur_java.recyclerAdapters.ContactsRecyclerAdapter;
+import com.example.repondeur_java.utils.SmsReceiver;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class SendFragment extends Fragment {
 
     private static final int SMS_PERMISSION_CODE = 123;
+    private static final int REQUEST_SCHEDULE_EXACT_ALARM_PERMISSION_CODE = 124;
     private Spinner contactsSpinner;
+    private Spinner contactsSpinnerSchedule;
+    private EditText messageInput;
+    private TimePicker timePicker;
     private ArrayAdapter<String> spinnerAdapter;
     private ArrayList<Contact> selectedContacts;
     private ArrayList<Contact> recipients;
@@ -59,20 +73,27 @@ public class SendFragment extends Fragment {
         // Récupération des boutons du fragment
         Button sendSpamButton = view.findViewById(R.id.send_spam);
         Button automaticResponseButton = view.findViewById(R.id.send_automatic_response);
+        Button sendScheduledMessageButton = view.findViewById(R.id.send_scheduled_message);
 
-        // Initialise le spinner
+        // Récupération du TimePicker et du message
+        timePicker = view.findViewById(R.id.time_picker);
+        messageInput = view.findViewById(R.id.message_input);
+
+        // Initialise les spinner
         contactsSpinner = view.findViewById(R.id.contacts_spinner);
+        contactsSpinnerSchedule = view.findViewById(R.id.contacts_spinner_schedule);
 
-        // Initialise l'adaptateur du spinner avec une liste vide
+        // Initialise les adaptateurs du spinner avec une liste vide
         spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         contactsSpinner.setAdapter(spinnerAdapter);
+        contactsSpinnerSchedule.setAdapter(spinnerAdapter);
 
         // Récupère les contacts sélectionnés dans la section "Contacts"
         selectedContacts = ((com.example.repondeur_java.MainActivity) getActivity()).getSelectedContacts();
 
         if (selectedContacts != null && !selectedContacts.isEmpty()) {
-            // Met à jour les contacts sélectionnés dans le spinner
+            // Met à jour les contacts sélectionnés dans les spinners
             updateSpinnerItems(selectedContacts);
         } else {
             // Item par défaut si aucun contact n'est sélectionné
@@ -191,12 +212,44 @@ public class SendFragment extends Fragment {
             }
         });
 
+        // Gestion du clic sur le bouton "Plannifier l'envoi du message
+        sendScheduledMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Vérification des permissions
+                checkAndRequestExactAlarmPermission();
+
+                // Vérification si il y a des contacts sélectionnés depuis la section "Contacts"
+                if (selectedContacts == null || selectedContacts.isEmpty()) {
+                    Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
+                } else if (contactsSpinnerSchedule.getSelectedItemPosition() == 0) {
+                    Toast.makeText(getContext(), "Sélection invalide", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Récupération du numéro de téléphone du contact sélectionné
+                    String phoneNumber = selectedContacts.get(contactsSpinnerSchedule.getSelectedItemPosition() - 1).getPhoneNumber();
+
+                    if (phoneNumber == null || phoneNumber.isEmpty()) {
+                        Toast.makeText(getContext(), "Numéro de téléphone invalide", Toast.LENGTH_SHORT).show();
+
+                    } else if (messageInput != null && !messageInput.getText().toString().isEmpty()) {
+                        // Récupération du message à envoyer
+                        String message = messageInput.getText().toString();
+
+                        // Planification de l'envoi du message
+                        scheduleSms(phoneNumber, message);
+                    } else {
+                        Toast.makeText(getContext(), "Aucune message renseigné", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         return view;
     }
 
 
     /**************************
-     * Spinner
+     * Spinners
     **************************/
     // Méthode pour mettre à jour les contacts sélectionnés dans le spinner
     public void updateSpinnerItems(ArrayList<Contact> selectedContacts) {
@@ -312,6 +365,52 @@ public class SendFragment extends Fragment {
             return gson.fromJson(json, type);
         } else {
             return new ArrayList<Contact>();
+        }
+    }
+
+    /****************************************
+     * Planification de l'envoi du message
+     ****************************************/
+    // Méthode pour planifier l'envoi d'un SMS
+    private void scheduleSms(String phoneNumber, String message) {
+        // Vérification de la permission SCHEDULE_EXACT_ALARM
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getContext(), "Permission requise pour planifier des alarmes exactes.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Création d'un calendrier avec l'heure et la minute sélectionnées
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+        calendar.set(Calendar.MINUTE, timePicker.getMinute());
+        calendar.set(Calendar.SECOND, 0);
+
+        // Création de l'intent pour envoyer le SMS planifié
+        Intent intent = new Intent(getContext(), SmsReceiver.class);
+        intent.setAction("com.example.repondeur_java.SEND_SCHEDULED_SMS");
+        intent.putExtra("phoneNumber", phoneNumber);
+        intent.putExtra("message", message);
+
+        // Création du PendingIntent pour l'intent
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // Planification de l'envoi du SMS
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            Toast.makeText(getContext(), "Message planifié pour " + calendar.getTime(), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Erreur lors de la planification du message.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    // Méthode pour vérifier et demander la permission de SCHEDULE_EXACT_ALARM
+    private void checkAndRequestExactAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, REQUEST_SCHEDULE_EXACT_ALARM_PERMISSION_CODE);
+            }
         }
     }
 }
