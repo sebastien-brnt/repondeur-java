@@ -13,13 +13,13 @@ Cette application mobile Android a été développée dans le but d'envoyer des 
 ## Tabs
 Les fonctionnalités de l'application sont réparties sur 3 tabs de la manières suivantes : 
 **Tab Contacts :**
-    - Vue de l'ensemble des contacts du téléphone
+- Vue de l'ensemble des contacts du téléphone
 **Tab Messages :**
-    - Création et suppression de message personnalisé afin de pouvoir les définir comme Spam ou Réponse automatique
+- Création et suppression de message personnalisé afin de pouvoir les définir comme Spam ou Réponse automatique
 **Tab Envoi :**
-    - Envoi de message spam à un contact spécifique du téléphone
-    - Activation d'une réponse automatique à certains contacts spécifique du téléphone
-    - Plannification de l'envoi d'un message personnalisé à un contact spécifique du téléphone
+- Envoi de message spam à un contact spécifique du téléphone
+- Activation d'une réponse automatique à certains contacts spécifique du téléphone
+- Plannification de l'envoi d'un message personnalisé à un contact spécifique du téléphone
 
 ## Captures d'écran
 Un dossier nommé `screenshots` est disponible à la racine du projet. Il contient des captures d'écran de l'application.
