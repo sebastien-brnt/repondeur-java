@@ -235,6 +235,9 @@ public class SendFragment extends Fragment {
                         // Récupération du message à envoyer
                         String message = messageInput.getText().toString();
 
+                        // Remise à zéro du champ de message
+                        messageInput.setText("");
+
                         // Planification de l'envoi du message
                         scheduleSms(phoneNumber, message);
                     } else {
@@ -384,6 +387,13 @@ public class SendFragment extends Fragment {
         calendar.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
         calendar.set(Calendar.MINUTE, timePicker.getMinute());
         calendar.set(Calendar.SECOND, 0);
+
+        // Vérification si l'heure sélectionnée est déjà passée
+        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+
+            // Si l'heure sélectionnée est déjà passée, on programme l'envoi pour le lendemain
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
 
         // Création de l'intent pour envoyer le SMS planifié
         Intent intent = new Intent(getContext(), SmsReceiver.class);
