@@ -105,7 +105,10 @@
                 android:id="@+id/contacts_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                android:minHeight="110dp"
+                android:visibility="gone"
+                />
 
 
             <!-- Séparation entre les réponse automatique et la plannification -->

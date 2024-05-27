@@ -117,6 +117,9 @@ public class SendFragment extends Fragment {
 
             // Met à jour la liste des contacts
             dataset.addAll(recipients);
+
+            // Affichage de la liste des contacts
+            recyclerView.setVisibility(View.VISIBLE);
         }
 
         adapter = new ContactsRecyclerAdapter(dataset, recipients, false);
