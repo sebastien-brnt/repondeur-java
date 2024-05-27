@@ -63,7 +63,7 @@ public class SendFragment extends Fragment {
 
     /**************************
      * Création de la vue
-    **************************/
+     **************************/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,44 +133,42 @@ public class SendFragment extends Fragment {
                     Toast.makeText(getContext(), "Aucun contact sélectionné", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    if (checkSMSPermissions()) {
-                        // Récupération de la réponse cochée comme spam
-                        Response spamResponse = ((MainActivity) getActivity()).getSpamResponse();
+                    // Vérification et demande des permissions si nécessaire
+                    checkAndRequestPermissions();
 
-                        // Vérification si une réponse cochée comme spam est trouvée
-                        if (spamResponse != null) {
+                    // Récupération de la réponse cochée comme spam
+                    Response spamResponse = ((MainActivity) getActivity()).getSpamResponse();
 
-                            // Vérification si un contact est sélectionné et non l'item de sélection par défaut
-                            if ( contactsSpinner.getSelectedItemPosition() != 0) {
+                    // Vérification si une réponse cochée comme spam est trouvée
+                    if (spamResponse != null) {
 
-                                // Récupération du numéro de téléphone du contact sélectionné
-                                String phoneNumber = selectedContacts.get(contactsSpinner.getSelectedItemPosition() - 1).getPhoneNumber();
+                        // Vérification si un contact est sélectionné et non l'item de sélection par défaut
+                        if ( contactsSpinner.getSelectedItemPosition() != 0) {
 
-                                // Récupération du message de la réponse cochée comme spam
-                                String message = spamResponse.getText();
+                            // Récupération du numéro de téléphone du contact sélectionné
+                            String phoneNumber = selectedContacts.get(contactsSpinner.getSelectedItemPosition() - 1).getPhoneNumber();
 
-                                // Vérification du numéro de téléphone
-                                if (phoneNumber == null || phoneNumber.isEmpty()) {
-                                    Toast.makeText(getContext(), "Numéro de téléphone invalide", Toast.LENGTH_SHORT).show();
+                            // Récupération du message de la réponse cochée comme spam
+                            String message = spamResponse.getText();
 
-                                } else {
-                                    // Envoi du message 4 fois
-                                    for (int i = 0; i < 4; i++) {
-                                        sendSMS(phoneNumber, message);
-                                    }
-                                }
+                            // Vérification du numéro de téléphone
+                            if (phoneNumber == null || phoneNumber.isEmpty()) {
+                                Toast.makeText(getContext(), "Numéro de téléphone invalide", Toast.LENGTH_SHORT).show();
 
                             } else {
-                                // Si le contact n'est pas de type Contact
-                                Toast.makeText(getContext(), "Sélection invalide", Toast.LENGTH_SHORT).show();
+                                // Envoi du message 4 fois
+                                for (int i = 0; i < 4; i++) {
+                                    sendSMS(phoneNumber, message);
+                                }
                             }
+
                         } else {
-                            // Si aucune réponse cochée comme spam n'est trouvée
-                            Toast.makeText(getContext(), "Aucune réponse marquée comme spam trouvée", Toast.LENGTH_SHORT).show();
+                            // Si le contact n'est pas de type Contact
+                            Toast.makeText(getContext(), "Sélection invalide", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        // Si les permissions ne sont pas accordées, on les demandes
-                        requestSMSPermissions();
+                        // Si aucune réponse cochée comme spam n'est trouvée
+                        Toast.makeText(getContext(), "Aucune réponse marquée comme spam trouvée", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -253,7 +251,7 @@ public class SendFragment extends Fragment {
 
     /**************************
      * Spinners
-    **************************/
+     **************************/
     // Méthode pour mettre à jour les contacts sélectionnés dans le spinner
     public void updateSpinnerItems(ArrayList<Contact> selectedContacts) {
         ArrayList<String> contactNames = new ArrayList<>();
@@ -275,23 +273,39 @@ public class SendFragment extends Fragment {
 
     /**************************
      * Permissions
-    **************************/
-    // Méthode pour vérifier les permissions d'envoyer et de recevoir des SMS
-    private boolean checkSMSPermissions() {
+     **************************/
+    // Méthode pour vérifier les permissions nécessaire
+    private boolean checkPermissions() {
         boolean sendSMSPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
         boolean receiveSMSPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
-        return sendSMSPermission && receiveSMSPermission;
+        boolean scheduleExactAlarmPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_GRANTED;
+        return sendSMSPermission && receiveSMSPermission && scheduleExactAlarmPermission;
     }
 
 
-    // Méthode pour demander les permissions d'envoyer et de recevoir des SMS
-    private void requestSMSPermissions() {
+
+    // Méthode pour demander les permissions nécessaires
+    private void requestPermissions() {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+
         if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
             Toast.makeText(getContext(), "Les permissions d'envoyer et de recevoir des SMS sont nécessaires pour cette fonctionnalité.", Toast.LENGTH_SHORT).show();
         }
-        requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, SMS_PERMISSION_CODE);
+        permissionsToRequest.add(Manifest.permission.SEND_SMS);
+        permissionsToRequest.add(Manifest.permission.RECEIVE_SMS);
+        permissionsToRequest.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
+
+        requestPermissions(permissionsToRequest.toArray(new String[0]), SMS_PERMISSION_CODE);
     }
 
+    // Méthode pour vérifier et demander les permissions si nécessaire
+    private void checkAndRequestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!checkPermissions()) {
+                requestPermissions();
+            }
+        }
+    }
 
     // Méthode pour gérer la réponse de l'utilisateur à la demande de permissions
     @Override
@@ -313,9 +327,10 @@ public class SendFragment extends Fragment {
     }
 
 
+
     /**************************
      * Envoi SPAM
-    **************************/
+     **************************/
     // Méthode pour envoyer un SMS
     public void sendSMS(String phoneNumber, String message) {
         try {
@@ -332,7 +347,7 @@ public class SendFragment extends Fragment {
 
     /****************************************
      * Sauvegarde des contacts et du message
-    ****************************************/
+     ****************************************/
     // Méthode pour enregistrer les contacts sélectionnés dans les SharedPreferences
     private void saveAutomaticContacts(ArrayList<Contact> selectedContacts) {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
@@ -355,8 +370,8 @@ public class SendFragment extends Fragment {
     }
 
     /****************************************
-    * Récupération des contacts automatiques
-    ****************************************/
+     * Récupération des contacts automatiques
+     ****************************************/
     private ArrayList<Contact> getAutomaticResponseRecipients() {
         // Récupération des contacts sélectionnés enregistrés dans SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("AutoContactsPrefs", Context.MODE_PRIVATE);
