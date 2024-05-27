@@ -53,10 +53,10 @@ public class SmsReceiver extends BroadcastReceiver {
 
 
                     if (isContactSelected(sender)) {
-                        Log.d(TAG, "Sender is a selected contact. Sending auto-response.");
+                        Log.d(TAG, "Le contact est un contact sélectionné. Envoi de la réponse automatique.");
                         sendAutoResponse(sender);
                     } else {
-                        Log.d(TAG, "Sender is not a selected contact.");
+                        Log.d(TAG, "Le contact n'est pas un contact sélectionné.");
                     }
                 }
             }
