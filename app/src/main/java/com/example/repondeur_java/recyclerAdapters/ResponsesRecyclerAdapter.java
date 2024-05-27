@@ -1,6 +1,7 @@
 package com.example.repondeur_java.recyclerAdapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +104,9 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
                     } else {
                         // Sinon, on active la réponse automatique
                         response.setAutomaticResponse(true);
+
+                        // Enregistrement de la réponse dans la mémoire du téléphone
+                        saveAutoResponseMessage(response.getText());
                     }
                 } else {
                     // Si la case est décochée, on désactive la réponse automatique
@@ -186,5 +190,17 @@ public class ResponsesRecyclerAdapter extends RecyclerView.Adapter<ResponsesRecy
         return responsesDataset.size();
     }
 
+
+    /************************************
+     * Enregistrement réponse automatique
+    ************************************/
+    // Méthode pour enregistrer le message de réponse automatique dans les SharedPreferences
+    private void saveAutoResponseMessage(String message) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("AutoResponsePrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("automaticResponseMessage", message);
+        editor.apply();
+    }
 
 }
